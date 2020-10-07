@@ -26,7 +26,7 @@ Route::group(['middleware' => 'CheckLogin'], function () {
 });
 
 Route::group(['middleware' => 'web'], function (){
-    Route::post('/register', 'userController@doRegister')->name('register');
+    Route::post('/register', 'UserController@create')->name('register');
     Route::get('/register', 'HomeController@showRegister')->name('viewRegister');
 
 });

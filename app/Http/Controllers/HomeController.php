@@ -40,7 +40,7 @@ class HomeController extends Controller
 
             } else {
                 // validation not successful
-                return Redirect::to('login');
+                return Redirect::to('viewLogin');
 
             }
 

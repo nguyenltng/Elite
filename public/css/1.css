@@ -1,0 +1,1103 @@
+.fontroboto {
+  font-family: "Roboto Slab", serif;
+}
+.fontoswald {
+  font-family: "Oswald", sans-serif;
+}
+.fontdancing {
+  font-family: "Dancing Script", cursive;
+}
+.fontenbed{
+    font-family: 'Playfair Display', serif;
+}
+.fontcrimson{
+    font-family: 'Crimson Text', serif;
+}
+.fontdosis{
+font-family: 'Dosis', sans-serif;
+}
+.fontpacico{
+    font-family: 'Pacifico', cursive;
+}
+.fontplayair{
+    font-family: 'Playfair Display', serif;
+}
+/* css header */
+.header {
+    height: 50px;
+    background-color: #333;
+    color: white;
+    line-height: 50px;
+}
+.header .col-sm-4.open {
+    height: 50px;
+    border-left: 1px solid #8e8e8e;
+    font-size: 15px;
+    text-align: center;
+}
+
+.header .col-sm-6.address {
+    border-left: 1px solid #8e8e8e;
+    height: 50px;
+    overflow: hidden;
+}
+
+.header .address p {
+    color: #e8e8e8;
+    text-align: center;
+    font-size: 15px;
+}
+.header .mxh{
+    overflow: hidden;
+    height: 50px;
+}
+.header .mxh a{
+    padding: 10px;
+    color: #feb158;
+}
+/* css menu */
+.mainmenu ul li a {
+    padding: 10px 20px;
+    font-size: 18px;
+    color: black;
+}
+
+.mainmenu ul li {float: left;}
+
+.mainmenu ul {
+    list-style: none;
+}
+
+.mainmenu ul li a {
+    padding: 10px 20px;
+    font-size: 18px;
+    color: black;
+    text-decoration: none;
+    margin-left: 18px;
+}
+.mainmenu ul li a:hover{
+    color: #feb158;
+}
+
+.mainmenu ul li {float: left;padding: 24px 0;}
+
+.mainmenu ul {
+    list-style: none;
+}
+
+.mainmenu {
+    height: 80px;
+    background: #eae4c3;
+    overflow: hidden;
+}
+
+.col-sm-5.login-search {display: inherit;}
+
+.mainmenu .col-sm-2.logo {
+    margin-top: 10px;
+}
+.mainmenu input.search {
+    width: 200px;
+    height: 35px;
+    margin-top: 20px;
+    margin-right: 1px;  /*box and box*/
+    padding-left: 2%;   /*text in box*/
+    border-top-left-radius: 2px;
+}
+.mainmenu .button{
+    height: 40px;
+    margin-top: 19px;
+    margin-right:10px;
+    width:50px;
+    background:#feb158
+}
+.mainmenu .button:hover{
+    color: white;
+    background: #f0ad4e;
+}
+.mainmenu .login {
+    margin-top: 20px;
+    margin-left: 20px;
+    background: #feb158;
+    border: 1px solid #00000026;
+    height: 39px;
+    color: black;
+    font-size: 15px;
+}
+.mainmenu .login:hover{
+    color: white;
+    background:#f0ad4e;
+}
+/* css slidehome */
+.slidehome{
+    overflow: hidden;
+}
+.slidehome h2 {
+    font-size: 50px;
+    font-family: "Dancing Script", cursive;
+    color: white;
+    line-height: 40px;
+}
+
+.slidehome .text-slide1,.text-slide2,.text-slide3,.text-slide4 {
+    position: absolute;
+    text-align: center;
+    margin-left: 15%;
+    color: white;
+    padding-top: 150px;
+}
+.slidehome p {
+    font-size: 20px;
+    margin-top: 18px;
+    font-family: "Roboto Slab", serif;
+}
+.slidehome .btn.btn-warning {
+    color: black;
+    margin-top: 30px;
+    border: 2px solid #dcc5c5;
+    background-color: #feb158;
+}
+.slidehome .btn.btn-warning:hover{
+    background-color: #f0ad4e;
+    color: white;
+}
+ .slidehome .text-slide2{
+    margin-left:25%
+}
+.slidehome .text-slide3 {
+    margin-left:35%
+}
+.slidehome .text-slide4 {
+    margin-left:25%
+}
+/* css blockservice */
+.blockservice {margin-top: 50px;text-align: center;}
+.blockservice a {
+    font-size: 20px;
+    display: block;
+    margin-bottom: 10px;
+    text-decoration: none;
+    color: black;
+    font-family: "Oswald", sans-serif;
+}
+.blockservice a:hover{
+    color:#feb158;
+}
+.blockservice span {
+    font-size: 18px;
+    margin-bottom: 10px;
+    display: block;
+    font-family: 'Crimson Text', serif;
+}
+
+.blockservice h2 {
+    font-size: 35px;
+    color: #feb158;
+    margin-top: 15px;
+    line-height: 40px;
+    font-family: "Dancing Script", cursive;
+}
+
+.blockservice h1 {
+    margin-bottom: 50px;
+    text-transform: uppercase;
+    font-family: 'Playfair Display', serif;
+    color: #feb158;
+}
+.blockservice img{
+    transition: 1s;
+    transform: perspective(600px);
+    transition-delay: 1s;
+}
+.blockservice img:hover {
+    transform: rotateY(180deg);
+    transition-delay: 0.5s;
+}
+/* css smallmenu */
+.smallmenu a {
+    color: white;
+    font-size: 30px;
+    padding: 12px;
+    font-family: "Oswald", sans-serif;
+    text-decoration: none;
+    color: #EE0000;
+}
+
+.smallmenu .dish-day {
+    margin-bottom: 30px;
+    line-height: 100px;
+    height: 100px;
+    background-color: #CFCFCF;
+}
+
+.smallmenu {
+    margin-top: 40px;
+    overflow: hidden;
+}
+.smallmenu .single-dish {
+    background-color: #b0e0e63b;
+}
+.smallmenu .single-dish:hover{
+    background-color: #feb158;
+    transform: rotate(360deg);
+}
+.smallmenu .single-dish:hover .dish-price{
+    color: red;
+}
+.smallmenu .dish-img{
+    overflow: hidden;
+}
+.smallmenu .col-sm-3 {
+    padding: 20px 10px;
+}
+.smallmenu h3.dish-name {
+    font-size: 27px;
+    margin-left: 10px;
+    font-family: 'Playfair Display', serif;
+    color: black;
+}
+.smallmenu .text-dish{
+    margin-top: 15px;
+}
+.smallmenu span.dish-price {
+    font-size: 30px;
+    margin-right: 10px;
+    color:#feb158;
+    margin-top: -7px;
+    font-family: "Roboto Slab", serif;
+}
+.smallmenu .dish-detail {
+    color: #310b0b;
+    text-align: center;
+    font-size: 16px;
+    margin-top: 10px;
+    padding: 0px 10px 12px 12px;
+    font-family: 'Dosis', sans-serif;
+}
+/* css food trend */
+section.foodtrend {
+    background: url(../image/reservation-bg.jpg);
+    margin-top: 40px;
+    background-size: cover;
+    height: 430px;
+    color: white;
+}
+.foodtrend .btn.btn-warning.button-food {
+    border: 1px solid white;
+    height: 40px;
+    background:#feb158
+}
+.foodtrend .btn.btn-warning.button-food:hover{
+    background-color:  #f0ad4e;
+}
+.foodtrend span {
+    font-size: 28px;
+    display: block;
+    margin-bottom: 25px;
+    font-family: 'Dosis', sans-serif;
+}
+
+.foodtrend h2 {
+    font-size: 50px;
+    margin-top: 165px;
+    font-family: "Dancing Script", cursive;
+    line-height: 60px;
+}
+
+/* css ourfood */
+
+section.foodtrend {
+    background: url(../image/reservation-bg.jpg);
+    margin-top: 40px;
+    background-size: cover;
+    height: 430px;
+    color: white;
+}
+.foodtrend .btn.btn-warning.button-food {
+    border: 1px solid white;
+    height: 40px;
+    background:#feb158
+}
+.foodtrend .btn.btn-warning.button-food:hover{
+    background-color:  #f0ad4e;
+}
+.foodtrend span {
+    font-size: 28px;
+    display: block;
+    margin-bottom: 25px;
+    font-family: 'Dosis', sans-serif;
+}
+
+.foodtrend h2 {
+    font-size: 50px;
+    margin-top: 165px;
+    font-family: "Dancing Script", cursive;
+    line-height: 60px;
+}
+
+/* css ourfood */
+
+.ourfood p {
+    font-size: 18px;
+    margin-bottom: 30px;
+    font-style: italic;
+}
+
+.ourfood h2 {
+    font-size: 50px;
+    color: #feb158;
+    font-family: 'Pacifico', cursive;
+}
+
+section.ourfood {
+    margin-top: 60px;
+    overflow: hidden;
+    transition: 0.4s;
+}
+
+.ourfood a.btn.btn-warning {
+    margin-top: 5px;
+    height: 45px;
+    line-height: 25px;
+    width: 120px;
+    border: 1px solid gray;
+}
+
+.ourfood .price-ourfood {
+    font-size: 35px;
+    color: black;
+    margin-top: -25px;
+    font-family: "Roboto Slab", serif;
+}
+
+.textourfood p {
+    font-size: 18px;
+    font-style: italic;
+    line-height: 30px;
+    margin-top: 7px;
+}
+
+.textourfood h3 {
+    font-size: 30px;
+    margin-top: -8px;
+}
+
+.textourfood h2 {
+    font-size: 50px;
+    font-family: "Dancing Script", cursive;
+}
+
+.ourfood .stt {
+    font-size: 50px;
+    font-family: "Oswald", sans-serif;
+}
+
+.ourfood .col-sm-5.img-ourfood {
+    margin-top: 15px;
+}
+
+.ourfood .row.one-ourfood {
+    margin-bottom: 95px;
+}
+.img-ourfood{
+    overflow: hidden;
+}
+.ourfood .img-ourfood1 {
+    border-radius: 50%;
+    border: 1.5px solid;
+}
+
+.ourfood .textourfood {
+    margin-left: 60px;
+}
+
+/* css customer */
+section.customer {
+    background: url(../image/bg-customer.jpg);
+    margin-bottom: 50px;
+    height: 726px;
+    color: white;
+    position: relative;
+    z-index: 1;
+}
+.one-customer {
+    display: inline-flex;
+}
+
+.customer .text-customer p {
+    margin-top: 10px;
+    font-family: 'Dosis', sans-serif;
+}
+
+.customer .text-customer {
+    margin-left: -25px;
+}
+
+.customer .text-customer h3 {
+    margin-top: 35px;
+    font-family: 'Pacifico', cursive;
+    margin-bottom: 3px;
+}
+
+.customer .img-customer {
+    margin-left: 40px;
+    margin-top: 35px;
+}
+
+.customer .one-customer {
+    background: #e2efef;
+    color: black;
+    height: 200px;
+    margin-top: 60px;
+    border-radius: 10px;
+}
+.one-customer:hover h3{
+    color:#feb158;
+}
+
+.customer ol.carousel-indicators {margin-bottom: -100px;}
+
+.customer .title-customer p {
+    font-size: 18px;
+    font-style: italic;
+    color: white;
+}
+
+.customer h2 {
+    font-size: 60px;
+    color: #feb158;
+    font-family: "Dancing Script", cursive;
+}
+
+.customer .title-customer {
+    margin-top: 150px;
+}
+
+.customer .background {
+    position: absolute;
+    z-index: 2;
+    height: 726px;
+    background-color: #1b1919b0;
+    width: 100%;
+}
+.customer .carousel-item {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+/* css update food */
+.block-updatefood {
+    color: #777;
+}
+
+.updatefood .block-updatefood span i {
+    margin-top: 20px;
+    padding: 0 0 10px 20px;
+    margin-right: 5px;
+    color: #423737;
+}
+
+.updatefood .title-updatefood p {
+    font-size: 18px;
+    font-style: italic;
+    margin-bottom: 45px;
+}
+
+.updatefood .title-updatefood span {
+    color: #feb158;
+}
+
+.updatefood h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 40px;
+}
+
+section.updatefood {
+    overflow: hidden;
+    padding: 40px;
+}
+.one-updatefood p {
+    color: black;
+    margin-left: 15px;
+    margin-bottom: 25px;
+}
+
+.one-updatefood h2 {
+    font-size: 25px;
+    color: #feb158;
+    font-family: "Oswald", sans-serif;
+    margin-left: 15px;
+}
+
+.updatefood .one-updatefood {
+    background-color: rgb(255, 246, 246);
+    margin-top: -1px;
+    color: #231e1e;
+    height: 500px;
+}
+.updatefood .one-updatefood:hover{
+    background-color: #feb158;
+}
+.updatefood .one-updatefood:hover h2{
+    color: red;
+}
+.text-updatefood a {
+    text-decoration: none;
+    color: black;margin-left: 15px;
+    font-size: 20px;
+}
+.updatefood .one-updatefood:hover a{
+    color: white;
+}
+/* css footer */
+
+.form3 input.form-control {
+    height: 42px;
+}
+
+.booktable input.form-control {
+    margin-left: -10px;
+}
+
+.booktable .form-group {
+    display: flex;
+}
+
+.booktable span.input-group-text {
+    height: 40px;
+    width: 60px;
+    background: white;
+    color: black;
+    margin-top: 1px;
+    /* margin-right: -5px; */
+    text-align: center;
+    padding: 9px;
+    border-radius: 3px;
+    z-index: 5;
+}
+
+.booktable p {
+    font-style: italic;
+    font-size: 18px;
+    font-family: 'Crimson Text', serif;
+}
+
+.booktable .title-booktb span {
+    color: #feb158;
+}
+
+.booktable h2 {
+    font-size: 36px;
+    font-family: 'Playfair Display', serif;
+    margin-top: 100px;
+}
+.bg-booktb {
+    position: absolute;
+    z-index: 2;
+    background-color: #080606ad;
+    width: 100%;
+    height: 100%;
+}
+
+.booktable {
+    background: url(../image/table-bg.jpg);
+    height: 450px;
+    background-size: cover;
+    position: relative;
+    z-index: 1;
+    color: white;
+    margin-top: 40px;
+
+}
+.booktable .row.form-booktb
+{
+    margin-top: 40px;
+}
+.booktable .button-booktb {
+    margin-top: 35px;
+}
+
+/* css info-footer */
+
+.social span {
+    margin-left: 25px;
+}
+
+.social i {display: block;
+    padding-bottom: 20px;
+    margin-left: 30px;
+}
+.follow h2 {
+    font-size: 35px;
+    color: #feb158;
+}
+
+.info-footer .follow {
+    margin-top: 50px;
+    margin-bottom: 43px;
+}
+
+.infor-contact {padding-bottom: 15px;}
+
+.infor-contact i {
+    margin-right: 20px;
+}
+
+.title-contact h2 {
+    font-size: 35px;
+    color: #feb158;
+}
+
+.info-footer .title-contact {
+    margin-top: 50px;
+    margin-bottom: 43px;
+}
+
+.info-footer p {
+    margin-top: 30px;
+    font-size: 17px;
+}
+
+.info-footer img {
+    margin-top: 50px;
+}
+
+.info-footer {
+    background-color: #131230;
+    color: #bbb4b4;
+    font-family: inherit;
+}
+.social a {
+    color: #bbb4b4;
+    font-family: inherit;
+    text-decoration: none;
+}
+
+.bottom-footer i {
+    margin-left: 5px;
+}
+
+.bottom-footer a {
+    color: #feb158;
+    text-decoration: none;
+}
+
+.bottom-footer span {
+    margin-left: 120px;
+}
+
+.bottom-footer {
+    height: 80px;
+    line-height: 80px;
+    background-color: #0d0d27;
+    color: #fff;
+}
+.info-footer .col-sm-4 {
+    margin-bottom: 50px;
+}
+/* css page menu */
+
+/* css banner menu */
+.bg-menu {
+    background-color: #272956ad;
+    height: 480px;
+}
+
+section.banner-menu {
+    background: url(../image/menu/menu-bg.jpg);
+    height: 480px;
+    margin-top: 0px;
+}
+
+.banner-menu p {
+    font-size: 20px;
+    color: white;
+    margin-top: 20px;
+    font-style: italic;
+    font-family: 'Crimson Text', serif;
+}
+
+.banner-menu h1 {
+    margin-top: 190px;
+    font-size: 70px;
+    color: white;
+    font-style: italic;
+    font-family: 'Playfair Display', serif;
+}
+/* css food menu */
+.dish-menu .single-dish {
+    background-color: #b0e0e63b;
+}
+.dish-menu .single-dish:hover{
+    background-color: #feb158;
+    transform: rotate(360deg);
+}
+.dish-menu .single-dish:hover .dish-price{
+    color: red;
+}
+.dish-menu .single-dish:hover .btn-food{
+    background-color:#F0FFFF;
+    color: red;
+}
+.dish-menu .dish-img{
+    overflow: hidden;
+}
+.dish-menu .col-sm-4 {
+    padding: 20px 10px;
+}
+.dish-menu h3.dish-name {
+    font-size: 27px;
+    margin-left: 10px;
+    font-family: 'Playfair Display', serif;
+    color: black;
+}
+.dish-menu .text-dish{
+    margin-top: 15px;
+}
+.dish-menu span.dish-price {
+    font-size: 30px;
+    margin-right: 10px;
+    color:#feb158;
+    margin-top: -7px;
+    font-family: "Roboto Slab", serif;
+}
+.dish-menu .dish-detail {
+    color: #310b0b;
+    text-align: center;
+    font-size: 16px;
+    margin-top: 10px;
+    padding: 0px 10px 12px 12px;
+    font-family: 'Dosis', sans-serif;
+}
+section.dish-menu {
+    background: url(../image/menu/food-bg.png);
+    background-repeat: no-repeat;
+    position: relative;
+    background-position: right;
+}
+.food-menu li {
+    background: #feb158;
+    border: 1px solid gray;
+}
+
+.food-menu ol.carousel-indicators {
+    margin-bottom: -50px;
+}
+
+.title-menu p {
+    padding-right: 600px;
+    font-size: 18px;
+    font-family: inherit;
+    color: black;
+    margin-top: 15px;
+}
+
+.title-menu h3 {
+    color: #131230;
+    font-family: "Playfair Display",serif;
+    font-size: 36px;
+    font-weight: 700;
+}
+
+.title-menu h2 {
+    font-size: 50px;
+    color: #feb158;
+    font-family: 'Pacifico', cursive;
+}
+
+.dish-menu .title-menu {
+    margin-left: 20px;
+    margin-top: 30px;
+}
+
+.row.food-menu {
+    position: relative;
+    z-index: 3;
+    background: white;
+    margin-top: 20px;
+    margin-bottom: 50px;
+}
+.food-menu .button-food
+ {
+    padding-bottom: 20px;
+}
+
+/* css page contact */
+.bg-contact {
+    background-color: #272956ad;
+    height: 480px;
+}
+
+section.banner-contact {
+    background: url(../image/contact/contact-bg.jpg);
+    height: 480px;
+    margin-top: 0px;
+}
+
+.banner-contact p {
+    font-size: 20px;
+    color: white;
+    margin-top: 20px;
+    font-style: italic;
+    font-family: 'Crimson Text', serif;
+}
+
+.banner-contact h1 {
+    margin-top: 190px;
+    font-size: 70px;
+    color: white;
+    font-style: italic;
+    font-family: 'Playfair Display', serif;
+}
+/* css google maps */
+section.map-foodfun {
+    margin-top: 80px;
+    margin-bottom: 30px;
+}
+.map-foodfun .btn-map {
+    margin-top: -68px;
+    position: absolute;
+    margin-left: 60px;
+}
+.map-foodfun .btn-map:hover a{
+    color: black;
+}
+.addres-contact textarea {
+    width: 100%;
+    border-radius: 10px;
+    padding-left: 20px;
+    padding-top: 10px;
+    height: 170px;
+}
+
+.addres-contact input {
+    height: 45px;
+    width: 100%;
+    margin-bottom: 17px;
+    border: 1px solid gray;
+    border-radius: 10px;
+    text-align: start;
+    padding-left: 20px;
+    color: black;
+}
+.addres-contact .infor-contact{
+    color: black;
+}
+.addres-contact{
+    margin-top: 60px;
+    margin-bottom: 40px;
+}
+
+/* css about-us */
+/* css banner about */
+.bg-about {
+    background-color: #272956ad;
+    height: 480px;
+}
+
+section.banner-about {
+    background: url(../image/about/about-bg.jpg);
+    height: 480px;
+    margin-top: 0px;
+}
+
+.banner-about p {
+    font-size: 20px;
+    color: white;
+    margin-top: 20px;
+    font-style: italic;
+    font-family: 'Crimson Text', serif;
+}
+
+.banner-about h1 {
+    margin-top: 190px;
+    font-size: 70px;
+    color: white;
+    font-style: italic;
+    font-family: 'Playfair Display', serif;
+}
+/* css chef */
+.chef-text {
+    position: absolute;
+    border-radius: 50%;
+    background: #d0d5e2;
+    width: 90%;
+    height: 90%;
+    top: 22px;
+    left: 19px;
+    /* padding: 120px; */
+    border: 1px solid gray;
+    transition: 1s;
+    backface-visibility: hidden;
+    transform: rotateY(180deg);
+}
+.chef:hover .chef-text,.chef1:hover .chef-text,.chef2:hover .chef-text{
+    transform: rotateY(0deg);
+}
+.bg-chef {
+    position: absolute;
+    border-radius: 50%;
+    background: url(../image/about/chef4.jpg);
+    background-size: cover;
+    width: 90%;
+    height: 90%;
+    top: 22px;
+    left: 19px;
+    border: 1px solid gray;
+    transition: 1s;
+    backface-visibility: hidden;
+}
+.chef1 .bg-chef{
+    background: url(../image/about/chef2.jpg);
+    background-size: cover;
+}
+.chef2 .bg-chef{
+    background: url(../image/about/chef1.jpg);
+    background-size: cover;
+}
+.chef:hover .bg-chef,.chef1:hover .bg-chef,.chef2:hover .bg-chef{
+    transform: rotateY(180deg);
+}
+.chef,.chef1,.chef2 {
+    background: url(../image/about/chef4.jpg);
+    background-size: cover;
+    height: 400px;
+    border-radius: 50%;
+    border: 1px solid;
+    position: relative;
+    perspective: 500px;
+    padding: 20px;
+}
+.chef1{
+    background: url(../image/about/chef2.jpg);
+    background-size: cover;
+}
+.chef2{
+    background: url(../image/about/chef1.jpg);
+    background-size: cover;
+}
+.chef h1,.chef1 h1,.chef2 h1 {
+    margin-top: 80px;
+    font-family: 'Playfair Display', serif;
+    color: #feb158;
+}
+.chef h2,.chef1 h2,.chef2 h2{
+    color: #292020;
+    font-family: "Oswald", sans-serif;
+}
+.chef p,.chef1 p,.chef2 p{
+    font-style: italic
+}
+.chef a i,.chef1 a i,.chef2 a i{
+    padding:10px;
+    margin-top: -20px;
+    color: #f53502;
+}
+.chef a i:hover,.chef1 a i:hover,.chef2 a i:hover{
+    color: #292020;
+}
+section.chef-about {
+    margin-top: 70px;
+    margin-bottom: 60px;
+}
+.chef-about .row.title-chef {
+    text-align: center;
+    margin-bottom: 40px;
+}
+.title-chef p {
+    font-size: 18px;
+    font-style: italic;
+    margin-top: 15px;
+    color: black;
+}
+
+.title-chef h2 {
+    font-size: 60px;
+    color: #feb158;
+    font-family: "Dancing Script", cursive;
+}
+
+/* css login */
+.login-food {
+    margin-top: 80px;
+    margin-bottom: 50px;
+    height: 450px;
+}
+.login-food input {
+    display: flex;
+    width: 70%;
+    margin-left: 50px;
+    height: 45px;
+    margin-bottom: 20px;
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding-left: 25px;
+}
+.login-food h3 {
+    margin-top: 30px;
+    color: #feb158;
+    font-size: 25px;
+    font-family: 'Playfair Display', serif;
+}
+
+.login-food .col-sm-6 {
+    position: relative;
+}
+.login-food p {font-style: italic;color: blue;}
+
+.login-food .btn-register {
+    margin-bottom: 40px;
+    width: 100px;
+    height: 30px;
+}
+
+.login-food .btn-login {
+    width: 100px;
+    margin-bottom: 20px;
+    height: 30px;
+}
+
+.register .btn-register {
+    margin-bottom: 20px;
+}
+
+.login-food .login {
+    width: 100%;
+    height: 400px;
+    border: 1px solid gray;
+    position: absolute;
+    z-index: 3;
+    background-color: #f8fafb;
+}
+.login-food .register{
+    width: 100%;
+    height: 440px;
+    border: 1px solid gray;
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.4s;
+    z-index: 4;
+    position: absolute;
+    opacity: 0;
+    background-color: #f8fafb;
+    transform:scale(0.3);
+}
+.register.appear{
+    opacity: 1;
+    visibility: visible;
+    transform:scale(1);
+}
+*{
+    margin: 0; padding: 0;
+}
+
+
+
+
+
+
+
+
+
+
+

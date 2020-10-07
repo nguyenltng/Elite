@@ -13,7 +13,7 @@ use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
-    public function doRegister(Request $request)
+    public function create(Request $request)
     {
         $rules = array(
             'name'     => 'bail|required',
@@ -29,12 +29,6 @@ class UserController extends Controller
                 ->withErrors($validator)
                 ->withInput($request->except('password'));
         } else {
-            // create our user data for the authentication
-//            $userdata = array(
-//                'name'      => $request->get('name'),
-//                'email'     => $request->get('email'),
-//                'password'  => $request->get('password'),
-//            );
             $uuid = Str::uuid()->toString();
             DB::table('users')->insert([
                 [
