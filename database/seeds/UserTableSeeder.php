@@ -1,5 +1,6 @@
 <?php
 
+use Faker\Provider\Uuid;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -14,13 +15,12 @@ class UserTableSeeder extends Seeder
      */
     public function run()
     {
-        $uuid = Str::uuid()->toString();
-        DB::table('users')->insert([
-            [
-                'id'=>$uuid,
+
+        \App\User::create([
             'name'=>'nguyen ',
             'email'=>'nguyenltng@gmail.com',
-            'password' => Hash::make('nguyen') ],
+            'email_verified_at' => now(),
+            'password' => Hash::make('nguyen')
         ]);
     }
 }

@@ -30,30 +30,35 @@
 </head>
 
 <body>
-<div class="login-food">
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-3"></div>
-            <div class="col-sm-6">
-                <div class="login text-xs-center">
-                    <h3>Register</h3>
-                    @if(Session::has('message'))
-                        <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
-                    @endif
-                    <form action="{{route('register')}}" method="post">
-                        <input type="hidden" name="_token" value="{{csrf_token()}}">
-                        <input type="text" name="name" placeholder="Username">
-                        <input type="email" name="email" placeholder="Email">
-                        <input type="password" name="password" placeholder="Password">
-                        <input type="password" name="passwordConfirm" placeholder="Confirm Password">
-                        <button class="btn btn-danger btn-login">Register</button>
-                    </form>
-                    <a href="{{route('viewLogin')}}" class="btn btn-warning btn-login">Login</a>
+    <div class="login-food">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-3"></div>
+                <div class="col-sm-6">
+                    <div class="login text-xs-center">
+                        <h3>Register</h3>
+                        @if(Session::has('message'))
+                            <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
+                        @endif
+                        <form action="{{route('register')}}" method="post">
+                            <input type="hidden" name="_token" value="{{csrf_token()}}">
+                            <input type="text" name="name" placeholder="Username">
+                            <input type="email" name="email" placeholder="Email">
+                            <input type="password" name="password" placeholder="Password">
+                            <input type="password" name="passwordConfirm" placeholder="Confirm Password">
+                            <button class="btn btn-danger btn-login">Register</button>
+                        </form>
+                        @if ($errors->any())
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        @endif
+                        <a href="{{route('viewLogin')}}" class="btn btn-warning btn-login">Login</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </body>
 
 </html>

@@ -17,7 +17,7 @@ class CheckLogin
     public function handle($request, Closure $next)
     {
         if(Auth::check()){
-            return redirect()->route('welcome');
+            return redirect()->route('viewProfile');
         }
         return $next($request);
     }
