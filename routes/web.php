@@ -16,16 +16,19 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::view('/profile', 'profile')->name('profile');
+Route::get('/profile/{id}', 'HomeController@showProfile')->name('viewProfile');
+Route::post('/update/{id}', 'UserController@update')->name('updateUser');
 
-Route::post('logout', array('uses' => 'HomeController@doLogout'));
+Route::get('/user/{id}', 'UserController@showEdit')->name('editUser');
+
+Route::get('logout', array('uses' => 'HomeController@doLogout'))->name('logout');
 
 Route::group(['middleware' => 'CheckLogin'], function () {
     Route::get('/login', 'HomeController@showLogin')->name('viewLogin');
     Route::post('/login', 'HomeController@doLogin')->name('login');
 });
 
-Route::group(['middleware' => 'web'], function (){
+Route::group(['middleware' => 'web'], function () {
     Route::post('/register', 'UserController@create')->name('register');
     Route::get('/register', 'HomeController@showRegister')->name('viewRegister');
 

@@ -27,26 +27,31 @@
 </head>
 
 <body>
-<div class="login-food">
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-3"></div>
-            <div class="col-sm-6">
-                <div class="login text-xs-center">
-                    <h3>Login</h3>
-                    <form action="{{route('login')}}" method="post">
-                        <input type="hidden" name="_token" value="{{csrf_token()}}">
-                        <input type="text" name="email" placeholder="Email" required>
-                        <input type="password" name="password" placeholder="Password" required>
-                        <button class="btn btn-warning btn-login">login</button>
-                    </form>
-                    <p>Don't have account</p>
-                    <a href="{{route('viewRegister')}}" class="btn btn-danger btn-register">Register</a>
+    <div class="login-food">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-3"></div>
+                <div class="col-sm-6">
+                    <div class="login text-xs-center">
+                        <h3>Login</h3>
+                        <form action="{{route('login')}}" method="post">
+                            @csrf
+                            <input type="text" name="email" placeholder="Email">
+                            <input type="password" name="password" placeholder="Password">
+                            @if ($errors->any())
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            @endif
+                            <button class="btn btn-warning btn-login">login</button>
+                        </form>
+                        <p>Don't have account</p>
+                        <a href="{{route('viewRegister')}}" class="btn btn-danger btn-register">Register</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </body>
 
 </html>

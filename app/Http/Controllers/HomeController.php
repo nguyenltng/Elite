@@ -1,8 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
@@ -14,10 +17,11 @@ class HomeController extends Controller
     {
         return view('login');
     }
+
     public function doLogin(Request $request)
     {
         $rules = array(
-            'email'    => 'required|email',
+            'email' => 'required|email',
             'password' => 'required|alphaNum|min:3'
         );
 
@@ -30,29 +34,35 @@ class HomeController extends Controller
         } else {
             // create our user data for the authentication
             $userdata = array(
-                'email'     => $request->get('email'),
-                'password'  => $request->get('password')
+                'email' => $request->get('email'),
+                'password' => $request->get('password')
             );
-            // attempt to do the login
             if (Auth::attempt($userdata)) {
-                $message  = 'SUCCESS!';
-                return redirect()->route('profile')->with($message);
-
+                //$data['id'] = Auth::id();
+                $data['user'] = User::query()->where('email', $request->get('email'))->first();
+                //return route('viewProfile',['id'=>Auth::id()]);
+                return route('viewProfile', ['id'=>$data['user']->id]);
             } else {
-                // validation not successful
-                return Redirect::to('viewLogin');
-
+                return view('login');
             }
 
         }
     }
+    public function showProfile($id)
+    {
+        $data['id'] = $id;
+        $data['user']= User::find($id);
+        return view('profile',$data);
+    }
+
     public function doLogout()
     {
         Auth::logout(); // log the user out of our application
         return Redirect::to('login'); // redirect the user to the login screen
     }
+
     public function showRegister()
     {
-        return View::make('register');
+        return view('register');
     }
 }
