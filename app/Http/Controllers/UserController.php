@@ -52,7 +52,7 @@ class UserController extends Controller
         }
     }
 
-    public function update(Request $request){
+    public function update(Request $request, $id){
         $password = Auth::user()->getAuthPassword();  //  where('email', $request->get('email'));
         $rules = array(
             'name'     => 'bail|required',
@@ -60,35 +60,31 @@ class UserController extends Controller
             'password' => 'bail|required|alphaNum|min:3',
             'oldPassword' => 'bail|required'
         );
+        $data['id'] = Auth::id();
 
-        if(!Hash::check($request->get('oldPassword'), $password)){
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return redirect()->route('viewProfile',['id'=>$data['id']])
+                ->withErrors($validator)
+                ->withInput($request->except('password'));
+        } else if(!Hash::check($request->get('oldPassword'), $password)) {
             session()->flash('message', 'Old Password Dont Match Current Password');
-            return redirect()->route('viewProfile');
-        }else{
-            $validator = Validator::make($request->all(), $rules);
-            if ($validator->fails()) {
-                return Redirect::to('viewProfile')
-                    ->withErrors($validator)
-                    ->withInput($request->except('password'));
-            } else {
-                $id = Auth::user()->getAuthIdentifier();
-                dd((string)Auth::user());
+            return redirect()->route('viewProfile', ['id' => $data['id']]);
+        }    else{
+            $id = Auth::user()->getAuthIdentifier();
+            DB::beginTransaction();
 
-                DB::beginTransaction();
-
-                DB::table('users')
-                    ->where('id', Auth::id() )
-                    ->update([
-                        'name'=> $request->get('name'),
-                        'email'=> $request->get('email'),
-                        'password' => Hash::make($request->get('password')),
-                ]);
-                session()->flash('message', 'Your account is updated');
-                DB::commit();
-                return redirect()->route('viewProfile');
-            }
+            DB::table('users')
+                ->where('id', Auth::id() )
+                ->update([
+                    'name'=> $request->get('name'),
+                    'email'=> $request->get('email'),
+                    'password' => Hash::make($request->get('password')),
+            ]);
+            session()->flash('message', 'Your account is updated');
+            DB::commit();
+            return  redirect()->route('viewProfile',['id'=>$data['id']]);
         }
-
     }
 
 }
