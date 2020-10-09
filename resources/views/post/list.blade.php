@@ -64,22 +64,18 @@
         </style>
     </head>
     <body>
-        <div class="flex-center position-ref">
-            @if (Route::has('login'))
-                <div class="top-right links">
-                    @auth
-                        <a href="{{ url('/') }}">Home</a>
-                        <a href="{{ route('viewProfile') }}">Profile</a>
-                    @else
-                        <a href="{{ route('login') }}">Login</a>
-
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}">Register</a>
-                        @endif
-                    @endauth
-                        <a href="{{ route('post') }}">Register</a>
-                </div>
-            @endif
-        </div>
+    @include('welcome')
+    @section('title','Post')
+    <h1>Post</h1>
+    <table style="width:70%">
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Link</th>
+        </tr>
+    </table>
+    @if(Route::has('login'))
+        <a href="{{ route('view.createPost') }}">New Post</a>
+    @endif
     </body>
 </html>

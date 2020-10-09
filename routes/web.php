@@ -33,3 +33,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/register', 'HomeController@showRegister')->name('viewRegister');
 
 });
+
+Route::get('/post','PostController@showListPost')->name('viewListPost');
+Route::get('/post/create', 'PostController@showViewCreatePost')->name('view.createPost');
+Route::post('/post/create', 'PostController@createPost')->name('createPost');

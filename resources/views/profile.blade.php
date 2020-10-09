@@ -28,6 +28,7 @@
     <link rel="stylesheet" href="{{asset('css/1.css')}}" />
 </head>
 <body>
+    @include('welcome')
     <div class="login-food">
         <div class="container">
             <div class="row">
@@ -35,14 +36,13 @@
                 <div class="col-sm-6">
                     <div class="login text-xs-center">
                         <h3>Profile</h3>
-                        <form action="{{route('updateUser/'.$id)}}" method="post">
-                            @dd($data)
+                        <form action="{{route('updateUser',$user->id)}}" method="post">
                             @if(Session::has('message'))
                                 <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
                             @endif
                             @csrf
-                                <input type="text" name="name" placeholder="Name" >
-                                <input type="text" name="email" placeholder="Email" >
+                                <input type="text" name="name" placeholder="Name" value="{{$user->name}}">
+                                <input type="text" name="email" placeholder="Email" value="{{$user->email}}">
                                 <input type="password" name="password" placeholder="Password" >
                                 <input type="password" name="oldPassword" placeholder="Old Password">
                             <button class="btn btn-warning btn-login">Edit</button>
