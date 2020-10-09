@@ -38,8 +38,10 @@ class HomeController extends Controller
                 'password' => $request->get('password')
             );
             if (Auth::attempt($userdata)) {
-               // $user = User::query()->where('email', $request->get('email'))->first();
-                return route('viewProfile',['id'=>Auth::id()]);
+                //$data['id'] = Auth::id();
+                $data['user'] = User::query()->where('email', $request->get('email'))->first();
+                //return route('viewProfile',['id'=>Auth::id()]);
+                return route('viewProfile', ['id'=>$data['user']->id]);
             } else {
                 return view('login');
             }
@@ -48,7 +50,9 @@ class HomeController extends Controller
     }
     public function showProfile($id)
     {
-        return view('profile',['id'=>$id]);
+        $data['id'] = $id;
+        $data['user']= User::find($id);
+        return view('profile',$data);
     }
 
     public function doLogout()
