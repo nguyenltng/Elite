@@ -12,7 +12,7 @@
         <!-- Styles -->
         <style>
             html, body {
-                background-color: #fff;
+                background-color: #ffffff;
                 color: #636b6f;
                 font-family: 'Nunito', sans-serif;
                 font-weight: 200;
@@ -61,24 +61,37 @@
             .m-b-md {
                 margin-bottom: 30px;
             }
+            .post input,textarea {
+                display: flex;
+                width: 60%;
+                margin-left: 50px;
+                height: 45px;
+                margin-bottom: 20px;
+                border: 1px solid gray;
+                border-radius: 5px;
+                padding-left: 25px;
+            }
         </style>
     </head>
     <body>
-        <div class="flex-center position-ref">
-            @if (Route::has('login'))
-                <div class="top-right links">
-                    @auth
-                        <a href="{{ url('/') }}">Home</a>
-                        <a href="{{ route('viewProfile',\Illuminate\Support\Facades\Auth::id()) }}">Profile</a>
-                    @else
-                        <a href="{{ route('login') }}">Login</a>
-
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}">Register</a>
-                        @endif
-                    @endauth
-                        <a href="{{ route('viewListPost') }}">Post</a>
-                </div>
+    @include('welcome')
+    @section('title','Post')
+    <h1>New Post</h1>
+    @if(Session::has('message'))
+        <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
+    @endif
+        <div class="post">
+            <form action="{{route('createPost')}}" method="post">
+                @csrf
+                <input type="text" name="title" placeholder="Title" >
+                <textarea style="height: 100px; font-family: 'Nunito', sans-serif;" rows = "5" cols = "60" name = "description" placeholder="Description"></textarea>
+                <input type="text" name="link" placeholder="Link" >
+                <button style="margin: 20px 500px 200px  ; width: 100px; height: 40px; ">Add</button>
+            </form>
+            @if ($errors->any())
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
             @endif
         </div>
     </body>

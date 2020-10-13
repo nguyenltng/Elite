@@ -8,6 +8,7 @@
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
         <!-- Styles -->
         <style>
@@ -64,22 +65,34 @@
         </style>
     </head>
     <body>
-        <div class="flex-center position-ref">
-            @if (Route::has('login'))
-                <div class="top-right links">
-                    @auth
-                        <a href="{{ url('/') }}">Home</a>
-                        <a href="{{ route('viewProfile',\Illuminate\Support\Facades\Auth::id()) }}">Profile</a>
-                    @else
-                        <a href="{{ route('login') }}">Login</a>
+    @include('welcome')
+    @section('title','Post')
+    <h1>Post</h1>
+    <table style="width:100%">
+        <tr>
+            <th>NUMBER</th>
+            <th>TITLE</th>
+            <th>DESCRIPTION</th>
+            <th>LINK</th>
+            <th></th>
+        </tr>
+        @for($item = 0; $item < sizeof($data); $item++)
+            <tr style="margin-top: 100px">
+                <th>{{$item+1}}</th>
+                <th>{{$data[$item]->title}}</th>
+                <th>{{$data[$item]->description}}</th>
+                <th><a href="{{$data[$item]->link}}">Click here</a></th>
+                <th>
+                    <a href="{{route('view.editPost',['id'=>$data[$item]->id])}}"><button>Edit</button></a>
+                    <a href="{{route('deletePost',['id'=>$data[$item]->id])}}"><button>Delete</button></a>
+                </th>
+            </tr>
+        @endfor
 
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}">Register</a>
-                        @endif
-                    @endauth
-                        <a href="{{ route('viewListPost') }}">Post</a>
-                </div>
-            @endif
-        </div>
+    </table>
+    <div>
+        {{ $data->links() }}
+    </div>
+        <a href="{{ route('view.createPost') }}">New Post</a>
     </body>
 </html>
