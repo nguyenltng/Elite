@@ -71,9 +71,7 @@ class UserController extends Controller
             session()->flash('message', 'Old Password Dont Match Current Password');
             return redirect()->route('viewProfile', ['id' => $data['id']]);
         }    else{
-            $id = Auth::user()->getAuthIdentifier();
             DB::beginTransaction();
-
             DB::table('users')
                 ->where('id', Auth::id() )
                 ->update([

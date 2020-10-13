@@ -12,7 +12,7 @@
         <!-- Styles -->
         <style>
             html, body {
-                background-color: #fff;
+                background-color: #ffffff;
                 color: #636b6f;
                 font-family: 'Nunito', sans-serif;
                 font-weight: 200;
@@ -61,30 +61,38 @@
             .m-b-md {
                 margin-bottom: 30px;
             }
+            .post input,textarea {
+                display: flex;
+                width: 60%;
+                margin-left: 50px;
+                height: 45px;
+                margin-bottom: 20px;
+                border: 1px solid gray;
+                border-radius: 5px;
+                padding-left: 25px;
+            }
         </style>
     </head>
     <body>
     @include('welcome')
     @section('title','Post')
-    <h1>Post</h1>
-    <table style="width:100%">
-        <tr>
-            <th>NUMBER</th>
-            <th>TITLE</th>
-            <th>DESCRIPTION</th>
-            <th>LINK</th>
-            <th></th>
-        </tr>
-        @for($item = 0; $item < sizeof($data); $item++)
-            <tr>
-                <th>{{$item+1}}</th>
-                <th>{{$data[$item]->title}}</th>
-                <th>{{$data[$item]->description}}</th>
-                <th><a href="{{$data[$item]->link}}">Click here</a></th>
-                <th><a href="{{route('view.editPost',['id'=>$data[$item]->id])}}"><button>Edit</button></a></th>
-            </tr>
-        @endfor
-    </table>
-        <a href="{{ route('view.createPost') }}">New Post</a>
+    <h1>New Post</h1>
+    @if(Session::has('message'))
+        <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
+    @endif
+        <div class="post">
+            <form action="{{route('editPost',$data->id)}}" method="post">
+                @csrf
+                <input type="text" name="title" placeholder="Title" value="{{$data->title}}" >
+                <textarea style="height: 100px; font-family: 'Nunito', sans-serif;" rows = "5" cols = "60" name = "description" placeholder="Description" value="{{$data->description}}"></textarea>
+                <input type="text" name="link" placeholder="Link" value="{{$data->link}}" >
+                <button style="margin: 20px 500px 200px  ; width: 100px; height: 40px; ">Update</button>
+            </form>
+            @if ($errors->any())
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            @endif
+        </div>
     </body>
 </html>
