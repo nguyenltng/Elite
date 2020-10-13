@@ -10,6 +10,6 @@ class Post extends Model
     public $timestamps = true;
 
     protected $fillable = [
-        'tile', 'description',
+        'user_id','title', 'description','link'
     ];
 }

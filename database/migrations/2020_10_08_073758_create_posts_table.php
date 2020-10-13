@@ -18,6 +18,7 @@ class CreatePostsTable extends Migration
             $table->uuid('user_id');
             $table->string('title');
             $table->text('description');
+            $table->text('link');
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users');
         });

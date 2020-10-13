@@ -41,7 +41,7 @@ class HomeController extends Controller
                 //$data['id'] = Auth::id();
                 $data['user'] = User::query()->where('email', $request->get('email'))->first();
                 //return route('viewProfile',['id'=>Auth::id()]);
-                return route('viewProfile', ['id'=>$data['user']->id]);
+                return redirect()->route('viewProfile', ['id'=>$data['user']->id]);
             } else {
                 return view('login');
             }
@@ -57,8 +57,8 @@ class HomeController extends Controller
 
     public function doLogout()
     {
-        Auth::logout(); // log the user out of our application
-        return Redirect::to('login'); // redirect the user to the login screen
+        Auth::logout();
+        return Redirect::to('/');
     }
 
     public function showRegister()

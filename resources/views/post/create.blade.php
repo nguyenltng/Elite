@@ -76,18 +76,16 @@
     <body>
     @include('welcome')
     @section('title','Post')
-    @dd($name)
-        <h1>New Post</h1>
+    <h1>New Post</h1>
+    @if(Session::has('message'))
+        <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
+    @endif
         <div class="post">
             <form action="{{route('createPost')}}" method="post">
-                @if(Session::has('message'))
-                    <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
-                @endif
                 @csrf
                 <input type="text" name="title" placeholder="Title" >
                 <textarea style="height: 100px; font-family: 'Nunito', sans-serif;" rows = "5" cols = "60" name = "description" placeholder="Description"></textarea>
                 <input type="text" name="link" placeholder="Link" >
-
                 <button style="margin: 20px 500px 200px  ; width: 100px; height: 40px; ">Add</button>
             </form>
             @if ($errors->any())

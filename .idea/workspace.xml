@@ -16,16 +16,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2e0c61c6-4f3c-4d77-9454-35f092c1079e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/app/Model/Post.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/post/list.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/HomeController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/HomeController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/PostController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/PostController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/UserController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Model/Post.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Model/Post.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/app.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/app.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/database/migrations/2020_10_08_073758_create_posts_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2020_10_08_073758_create_posts_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/post.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/post/create.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/profile.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/profile.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/welcome.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/welcome.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/post/create.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/post/create.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/post/list.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/post/list.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -163,7 +161,7 @@
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../sales-master" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -174,18 +172,19 @@
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\laragon\www\Elite\resources\views\post" />
-      <recent name="C:\laragon\www\Elite\app\Model" />
-      <recent name="C:\laragon\www\Elite\app\Trait" />
-      <recent name="C:\laragon\www\Elite\public\css" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\laragon\www\Elite\resources\views\post" />
       <recent name="C:\laragon\www\Elite\app\Model" />
       <recent name="C:\laragon\www\Elite\resources\views" />
       <recent name="C:\laragon\www\Elite\app" />
       <recent name="C:\laragon\www\Elite\public\js" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\laragon\www\Elite\app" />
+      <recent name="C:\laragon\www\Elite\app\Model" />
+      <recent name="C:\laragon\www\Elite\resources\views\post" />
+      <recent name="C:\laragon\www\Elite\app\Trait" />
+      <recent name="C:\laragon\www\Elite\public\css" />
     </key>
   </component>
   <component name="RunManager">
@@ -208,6 +207,7 @@
       <workItem from="1602128142496" duration="5555000" />
       <workItem from="1602135667506" duration="11408000" />
       <workItem from="1602209052154" duration="5455000" />
+      <workItem from="1602551337183" duration="6537000" />
     </task>
     <servers />
   </component>
@@ -246,10 +246,10 @@
       <screen x="0" y="0" width="1600" height="870" />
     </state>
     <state x="576" y="347" key="ComposerInitDialogKey/0.0.1600.870@0.0.1600.870" timestamp="1602063774106" />
-    <state x="580" y="190" key="FileChooserDialogImpl" timestamp="1602123355844">
+    <state x="580" y="190" key="FileChooserDialogImpl" timestamp="1602557822873">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
-    <state x="580" y="190" key="FileChooserDialogImpl/0.0.1600.870@0.0.1600.870" timestamp="1602123355844" />
+    <state x="580" y="190" key="FileChooserDialogImpl/0.0.1600.870@0.0.1600.870" timestamp="1602557822873" />
     <state x="624" y="158" key="NewPhpClassDialog" timestamp="1602132304268">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
@@ -262,13 +262,13 @@
       <screen x="0" y="0" width="1600" height="870" />
     </state>
     <state x="507" y="168" width="585" height="534" key="find.popup/0.0.1600.870@0.0.1600.870" timestamp="1602146679228" />
-    <state x="456" y="198" key="run.anything.popup" timestamp="1601968426599">
+    <state x="456" y="198" key="run.anything.popup" timestamp="1602558076499">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
-    <state x="456" y="198" key="run.anything.popup/0.0.1600.870@0.0.1600.870" timestamp="1601968426599" />
-    <state x="463" y="182" width="672" height="678" key="search.everywhere.popup" timestamp="1602209821655">
+    <state x="456" y="198" key="run.anything.popup/0.0.1600.870@0.0.1600.870" timestamp="1602558076499" />
+    <state x="463" y="182" width="672" height="678" key="search.everywhere.popup" timestamp="1602558561800">
       <screen x="0" y="0" width="1600" height="870" />
     </state>
-    <state x="463" y="182" width="672" height="678" key="search.everywhere.popup/0.0.1600.870@0.0.1600.870" timestamp="1602209821655" />
+    <state x="463" y="182" width="672" height="678" key="search.everywhere.popup/0.0.1600.870@0.0.1600.870" timestamp="1602558561800" />
   </component>
 </project>

@@ -67,15 +67,22 @@
     @include('welcome')
     @section('title','Post')
     <h1>Post</h1>
-    <table style="width:70%">
+    <table style="width:90%">
         <tr>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Link</th>
+            <th>NUMBER</th>
+            <th>TITLE</th>
+            <th>DESCRIPTION</th>
+            <th>LINK</th>
         </tr>
+        @for($item = 0; $item < sizeof($data); $item++)
+            <tr>
+                <th>{{$item+1}}</th>
+                <th>{{$data[$item]->title}}</th>
+                <th>{{$data[$item]->description}}</th>
+                <th><a href="{{$data[$item]->link}}">Click here</a></th>
+            </tr>
+        @endfor
     </table>
-    @if(Route::has('login'))
         <a href="{{ route('view.createPost') }}">New Post</a>
-    @endif
     </body>
 </html>
