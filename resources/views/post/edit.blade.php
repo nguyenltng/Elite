@@ -84,7 +84,7 @@
             <form action="{{route('editPost',$data->id)}}" method="post">
                 @csrf
                 <input type="text" name="title" placeholder="Title" value="{{$data->title}}" >
-                <textarea style="height: 100px; font-family: 'Nunito', sans-serif;" rows = "5" cols = "60" name = "description" placeholder="Description" value="{{$data->description}}"></textarea>
+                <textarea style="height: 100px; font-family: 'Nunito', sans-serif;" rows = "5" cols = "60" name = "description" placeholder="Description">{{$data->description}}</textarea>
                 <input type="text" name="link" placeholder="Link" value="{{$data->link}}" >
                 <button style="margin: 20px 500px 200px  ; width: 100px; height: 40px; ">Update</button>
             </form>

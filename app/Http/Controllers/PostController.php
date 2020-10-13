@@ -16,7 +16,9 @@ use Illuminate\Support\Str;
 class PostController extends Controller
 {
     public function showListPost(){
-        $data = $this->getListPost();
+//        $data = $this->getListPost();
+        $data = DB::table('posts')->paginate(5);
+
         return view('post.list',['data' => $data]);
     }
     public function showViewCreatePost(){
@@ -28,9 +30,8 @@ class PostController extends Controller
     }
 
     public function getListPost(){
-        $post = DB::table('posts')
-            ->select()->get();
-        return $post;
+//        $post = DB::table('posts')->paginate(5);
+//        return $post;
     }
     public function createPost(Request $request){
         $rules = array(
@@ -90,13 +91,22 @@ class PostController extends Controller
                         'description'=> $request->get('description'),
                         'link' => ($request->get('link')),
                     ]);
-                session()->flash('message', 'Your post is updated');
+//                session()->flash('message', 'Your post is updated');
                 DB::commit();
 
                 return redirect()->route('viewListPost');
             }
 
         }
+    }
+
+    public function deletePost($id){
+        DB::beginTransaction();
+        DB::table('posts')
+            ->where('id', $id )
+            ->delete();
+        DB::commit();
+        return redirect()->route('viewListPost');
     }
 
 }

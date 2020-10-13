@@ -8,6 +8,7 @@
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
         <!-- Styles -->
         <style>
@@ -76,15 +77,22 @@
             <th></th>
         </tr>
         @for($item = 0; $item < sizeof($data); $item++)
-            <tr>
+            <tr style="margin-top: 100px">
                 <th>{{$item+1}}</th>
                 <th>{{$data[$item]->title}}</th>
                 <th>{{$data[$item]->description}}</th>
                 <th><a href="{{$data[$item]->link}}">Click here</a></th>
-                <th><a href="{{route('view.editPost',['id'=>$data[$item]->id])}}"><button>Edit</button></a></th>
+                <th>
+                    <a href="{{route('view.editPost',['id'=>$data[$item]->id])}}"><button>Edit</button></a>
+                    <a href="{{route('deletePost',['id'=>$data[$item]->id])}}"><button>Delete</button></a>
+                </th>
             </tr>
         @endfor
+
     </table>
+    <div>
+        {{ $data->links() }}
+    </div>
         <a href="{{ route('view.createPost') }}">New Post</a>
     </body>
 </html>

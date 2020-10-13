@@ -39,3 +39,4 @@ Route::get('/post/create', 'PostController@showViewCreatePost')->name('view.crea
 Route::post('/post/create', 'PostController@createPost')->name('createPost');
 Route::get('/post/edit/{id}', 'PostController@showViewEditPost')->name('view.editPost');
 Route::post('/post/edit/{id}', 'PostController@editPost')->name('editPost');
+Route::get('/post/delete/{id}', 'PostController@deletePost')->name('deletePost');
