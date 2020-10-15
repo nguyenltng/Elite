@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
+use App\Http\Requests\LoginRequest;
+use App\Model\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -18,40 +19,21 @@ class HomeController extends Controller
         return view('login');
     }
 
-    public function doLogin(Request $request)
+    public function doLogin(LoginRequest $request)
     {
-        $rules = array(
-            'email' => 'required|email',
-            'password' => 'required|alphaNum|min:3'
-        );
+        if (Auth::attempt($request->only('email','password'))) {
 
-        $validator = Validator::make($request->all(), $rules);
-
-        if ($validator->fails()) {
-            return Redirect::to('login')
-                ->withErrors($validator)
-                ->withInput($request->except('password'));
+            $data['user'] = User::query()->where('email', $request->get('email'))->first();
+            return redirect()->route('viewProfile', ['id'=>$data['user']->id]);
         } else {
-            // create our user data for the authentication
-            $userdata = array(
-                'email' => $request->get('email'),
-                'password' => $request->get('password')
-            );
-            if (Auth::attempt($userdata)) {
-                //$data['id'] = Auth::id();
-                $data['user'] = User::query()->where('email', $request->get('email'))->first();
-                //return route('viewProfile',['id'=>Auth::id()]);
-                return redirect()->route('viewProfile', ['id'=>$data['user']->id]);
-            } else {
-                return view('login');
-            }
-
+            session()->flash('message', 'Something wrong!');
+            return view('login');
         }
     }
     public function showProfile($id)
     {
         $data['id'] = $id;
-        $data['user']= User::find($id);
+        $data['user']= User::query()->find($id);
         return view('profile',$data);
     }
 

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 
-use App\User;
+use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\UpdateUserRequest;
+use App\Model\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -18,59 +20,31 @@ use Illuminate\Support\Str;
 class UserController extends Controller
 {
 
-    public function create(Request $request)
+    public function create(CreateUserRequest $request)
     {
-        $rules = array(
-            'name'     => 'bail|required',
-            'email'    => 'bail|required|email',
-            'password' => 'bail|required|alphaNum|min:3',
-            'passwordConfirm' => 'bail|required|same:password'
-        );
+        $uuid = Str::uuid();
+        $mytime = Carbon::now();
+        User::create([
+                'id'=> $uuid,
+                'name'=> $request->get('name'),
+                'email'=> $request->get('email'),
+                'password' => Hash::make($request->get('password')),
+                'created_at' =>$mytime,
+                'remember_token' => Str::random(10),
+        ]);
+        session()->flash('message', 'Your account is created');
+        DB::commit();
+        return redirect()->route('register');
 
-        $validator = Validator::make($request->all(), $rules);
-
-        if ($validator->fails()) {
-            return Redirect::to('register')
-                ->withErrors($validator)
-                ->withInput($request->except('password'));
-        } else {
-            $uuid = Str::uuid();
-            $mytime = Carbon::now();
-            User::create([
-                    'id'=> $uuid,
-                    'name'=> $request->get('name'),
-                    'email'=> $request->get('email'),
-                    'password' => Hash::make($request->get('password')),
-                    'created_at' =>$mytime,
-                    'remember_token' => Str::random(10),
-            ]);
-            session()->flash('message', 'Your account is created');
-            DB::commit();
-
-            return redirect()->route('register');
-
-        }
     }
 
-    public function update(Request $request, $id){
+    public function update(UpdateUserRequest $request, $id){
         $password = Auth::user()->getAuthPassword();  //  where('email', $request->get('email'));
-        $rules = array(
-            'name'     => 'bail|required',
-            'email'    => 'bail|required|email',
-            'password' => 'bail|required|alphaNum|min:3',
-            'oldPassword' => 'bail|required'
-        );
         $data['id'] = Auth::id();
-
-        $validator = Validator::make($request->all(), $rules);
-        if ($validator->fails()) {
-            return redirect()->route('viewProfile',['id'=>$data['id']])
-                ->withErrors($validator)
-                ->withInput($request->except('password'));
-        } else if(!Hash::check($request->get('oldPassword'), $password)) {
+        if(!Hash::check($request->get('oldPassword'), $password)) {
             session()->flash('message', 'Old Password Dont Match Current Password');
             return redirect()->route('viewProfile', ['id' => $data['id']]);
-        }    else{
+        }else{
             DB::beginTransaction();
             DB::table('users')
                 ->where('id', Auth::id() )

@@ -71,24 +71,21 @@
     <table style="width:100%">
         <tr>
             <th>NUMBER</th>
-            <th>TITLE</th>
-            <th>DESCRIPTION</th>
-            <th>LINK</th>
             <th></th>
         </tr>
         @for($item = 0; $item < sizeof($data); $item++)
             <tr style="margin-top: 100px">
                 <th>{{$item+1}}</th>
-                <th>{{$data[$item]->title}}</th>
-                <th>{{$data[$item]->description}}</th>
-                <th><a href="{{$data[$item]->link}}">Click here</a></th>
+                <th>
+                    <p style="font-size: 20px">{{$data[$item]->title}}</p>
+                    <p>{{$data[$item]->description}}<a href="{{$data[$item]->link}}">Click here</a></p>
+                </th>
                 <th>
                     <a href="{{route('view.editPost',['id'=>$data[$item]->id])}}"><button>Edit</button></a>
                     <a href="{{route('deletePost',['id'=>$data[$item]->id])}}"><button>Delete</button></a>
                 </th>
             </tr>
         @endfor
-
     </table>
     <div>
         {{ $data->links() }}

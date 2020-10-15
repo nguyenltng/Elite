@@ -86,13 +86,13 @@
                 <input type="text" name="title" placeholder="Title" >
                 <textarea style="height: 100px; font-family: 'Nunito', sans-serif;" rows = "5" cols = "60" name = "description" placeholder="Description"></textarea>
                 <input type="text" name="link" placeholder="Link" >
+                @if ($errors->any())
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                @endif
                 <button style="margin: 20px 500px 200px  ; width: 100px; height: 40px; ">Add</button>
             </form>
-            @if ($errors->any())
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            @endif
         </div>
     </body>
 </html>
