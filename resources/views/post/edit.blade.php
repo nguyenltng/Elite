@@ -81,11 +81,12 @@
         <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
     @endif
         <div class="post">
-            <form action="{{route('editPost',$data->id)}}" method="post">
+            <form action="{{route('editPost',$data->id)}}" method="post" enctype="multipart/form-data">
                 @csrf
                 <input type="text" name="title" placeholder="Title" value="{{$data->title}}" >
                 <textarea style="height: 100px; font-family: 'Nunito', sans-serif;" rows = "5" cols = "60" name = "description" placeholder="Description">{{$data->description}}</textarea>
                 <input type="text" name="link" placeholder="Link" value="{{$data->link}}" >
+                <input id="image" type="file" name="image">
                 @if ($errors->any())
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>

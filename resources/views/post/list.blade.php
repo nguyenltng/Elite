@@ -70,19 +70,22 @@
     <h1>Post</h1>
     <table style="width:100%">
         <tr>
-            <th>NUMBER</th>
+            <th></th>
             <th></th>
         </tr>
         @for($item = 0; $item < sizeof($data); $item++)
             <tr style="margin-top: 100px">
-                <th>{{$item+1}}</th>
+                <th></th>
+                <th><img src="{{asset($data[$item]->image_path)}}"  height="200" width="200"></th>
                 <th>
                     <p style="font-size: 20px">{{$data[$item]->title}}</p>
                     <p>{{$data[$item]->description}}<a href="{{$data[$item]->link}}">Click here</a></p>
                 </th>
                 <th>
+                    @if(Session::has('user'))
                     <a href="{{route('view.editPost',['id'=>$data[$item]->id])}}"><button>Edit</button></a>
                     <a href="{{route('deletePost',['id'=>$data[$item]->id])}}"><button>Delete</button></a>
+                    @endif
                 </th>
             </tr>
         @endfor

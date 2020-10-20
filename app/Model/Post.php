@@ -21,6 +21,7 @@ class Post extends Model
         'category_id',
         'title',
         'description',
-        'link'
+        'link',
+        'image_path'
     ];
 }

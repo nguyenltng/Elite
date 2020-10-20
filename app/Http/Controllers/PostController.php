@@ -8,9 +8,13 @@ use App\Model\Category;
 use App\Model\Post;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Str;
+use App\Traits\UploadTrait;
 
 class PostController extends Controller
 {
+    use UploadTrait;
+
     /**
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
@@ -25,7 +29,7 @@ class PostController extends Controller
      */
     public function showViewCreatePost()
     {
-        return view('post.create',['data' => $this->getListNameCategory()] );
+        return view('post.create', ['data' => $this->getListNameCategory()]);
     }
 
     public function getListNameCategory()
@@ -63,9 +67,15 @@ class PostController extends Controller
             session()->flash('message', 'Please login first !!');
             return Redirect::to('post/create');
         } else {
+            $image = $request->file('image');
+            $name = Str::slug($request->input('name')) . '_' . time();
+            $folder = '/images/';
+            $filePath = $folder . $name . '.' . $image->getClientOriginalExtension();
+            $this->uploadOne($image, $folder, 'public', $name);
+
             Post::create([
                 'user_id' => $user_id,
-                'category_id'=> $request->get('categories'),
+                'category_id' => $request->get('categories'),
                 'title' => $request->get('title'),
                 'description' => $request->get('description'),
                 'link' => $request->get('link'),
@@ -89,11 +99,18 @@ class PostController extends Controller
             session()->flash('message', 'Please login first !!');
             return redirect()->route('view.editPost', ['id' => $id]);
         } else {
+            $image = $request->file('image');
+            $name = Str::slug($request->input('name')) . '_' . time();
+            $folder = '/images/';
+            $filePath = $folder . $name . '.' . $image->getClientOriginalExtension();
+            $this->uploadOne($image, $folder, 'public', $name);
+
             Post::where('id', $id)
                 ->update([
                     'title' => $request->get('title'),
                     'description' => $request->get('description'),
                     'link' => ($request->get('link')),
+                    'image_path' => $filePath
                 ]);
             session()->flash('message', 'Your post is updated');
 
@@ -105,9 +122,11 @@ class PostController extends Controller
      * @param $idCategory
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function getListPostByCategoryId($idCategory){
-        $listPost = Post::query()->where('category_id', $idCategory)->paginate(5);
-        return view('post.category', ['data' =>$listPost]);
+    public function getListPostByCategoryId($idCategory)
+    {
+        $data['listPost'] = Post::query()->where('category_id', $idCategory)->paginate(5);
+        $data['nameCategory'] = Category::where('id', $idCategory)->get('name');
+        return view('post.category', ['data' => $data]);
     }
 
     /**

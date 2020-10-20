@@ -88,6 +88,7 @@
                     <option value="{{$item->id}}">{{$item->name}}</option>
                     @endforeach
                 </select>
+                <input id="image" type="file" name="image">
                 <input type="text" name="title" placeholder="Title" >
                 <textarea style="height: 100px; font-family: 'Nunito', sans-serif;" rows = "5" cols = "60" name = "description" placeholder="Description"></textarea>
                 <input type="text" name="link" placeholder="Link" >
