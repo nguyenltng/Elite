@@ -25,7 +25,7 @@ class UpdateUserRequest extends FormRequest
     {
         return [
             'name'     => 'bail|required',
-            'email'    => 'bail|required|email',
+            'email'    => 'bail|required|email|unique:App\Model\User,email',
             'password' => 'bail|required|alphaNum|min:3',
             'oldPassword' => 'bail|required'
         ];
@@ -38,11 +38,13 @@ class UpdateUserRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.required' => 'Vui lòng nhập Email',
-            'email.required' => 'Vui lòng nhập mật khẩu.',
-            'password.required' => 'Vui lòng nhập mật khẩu.',
-            'oldPassword.required' => 'Vui lòng nhập mật khẩu.',
-            'password.min' => 'Mật khẩu phải nhiều hơn 3 kí tự.'
+            'name.required' => 'Please enter your name',
+            'email.required' => 'Please enter your Email.',
+            'email.unique' => 'Email was available. Please choice different email!',
+            'password.required' => 'Please enter your password.',
+            'passwordConfirm.required' => 'Please enter your confirm password.',
+            'password.min' => 'Password least 3 char.',
+            'passwordConfirm.confirmed' => 'Confirm password dont match with password.'
         ];
     }
 }

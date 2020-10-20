@@ -1,10 +1,8 @@
 <?php
 
-use Faker\Provider\Uuid;
+use App\Model\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 class UserTableSeeder extends Seeder
 {
@@ -15,10 +13,9 @@ class UserTableSeeder extends Seeder
      */
     public function run()
     {
-
-        \App\User::create([
-            'name'=>'nguyen ',
-            'email'=>'nguyenltng@gmail.com',
+        User::create([
+            'name' => 'nguyen ',
+            'email' => 'nguyenltng@gmail.com',
             'email_verified_at' => now(),
             'password' => Hash::make('nguyen')
         ]);

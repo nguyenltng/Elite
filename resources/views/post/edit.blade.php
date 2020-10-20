@@ -74,7 +74,7 @@
         </style>
     </head>
     <body>
-    @include('welcome')
+    @include('header')
     @section('title','Post')
     <h1>New Post</h1>
     @if(Session::has('message'))

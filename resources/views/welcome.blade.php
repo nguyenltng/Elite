@@ -4,11 +4,10 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>My Blog</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
-
         <!-- Styles -->
         <style>
             html, body {
@@ -64,22 +63,17 @@
         </style>
     </head>
     <body>
-        <div class="flex-center position-ref">
-            @if (Route::has('login'))
-                <div class="top-right links">
-                    @auth
-                        <a href="{{ url('/') }}">Home</a>
-                        <a href="{{ route('viewProfile',\Illuminate\Support\Facades\Auth::id()) }}">Profile</a>
-                    @else
-                        <a href="{{ route('login') }}">Login</a>
-
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}">Register</a>
-                        @endif
-                    @endauth
-                        <a href="{{ route('viewListPost') }}">Post</a>
-                </div>
-            @endif
+       @include('header')
+        <div class="content">
+            <div class="title m-b-md">
+                My Blog
+            </div>
+            @foreach($data as $item)
+            <div class="links">
+                <a href="{{route('view.listPostByCategoryId', $item->id)}}">{{$item->name}}</a>
+            </div>
+            @endforeach
         </div>
+
     </body>
 </html>

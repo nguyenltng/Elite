@@ -37,9 +37,9 @@ class UpdatePostRequest extends FormRequest
     public function messages()
     {
         return [
-            'title.required' => 'Vui lòng tiêu đề cho bài đăng.',
-            'description.required' => 'Vui lòng nhập mô tả.',
-            'link.required' => 'Vui lòng đường dẫn.'
+            'title.required' => 'Title is empty.',
+            'description.required' => 'Description is empty.',
+            'link.required' => 'Link is empty.'
         ];
     }
 }

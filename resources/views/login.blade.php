@@ -27,6 +27,7 @@
 </head>
 
 <body>
+@include('header')
     <div class="login-food">
         <div class="container">
             <div class="row">

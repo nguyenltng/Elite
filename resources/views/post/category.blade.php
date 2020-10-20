@@ -8,11 +8,12 @@
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
         <!-- Styles -->
         <style>
             html, body {
-                background-color: #ffffff;
+                background-color: #fff;
                 color: #636b6f;
                 font-family: 'Nunito', sans-serif;
                 font-weight: 200;
@@ -61,43 +62,34 @@
             .m-b-md {
                 margin-bottom: 30px;
             }
-            .post input,textarea,select {
-                display: flex;
-                width: 60%;
-                margin-left: 50px;
-                height: 45px;
-                margin-bottom: 20px;
-                border: 1px solid gray;
-                border-radius: 5px;
-                padding-left: 25px;
-            }
         </style>
     </head>
     <body>
     @include('header')
     @section('title','Post')
-    <h1>New Post</h1>
-    @if(Session::has('message'))
-        <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
+    <h1></h1>
+    <table style="width:100%">
+        <tr>
+            <th>NUMBER</th>
+            <th></th>
+        </tr>
+        @for($item = 0; $item < sizeof($data); $item++)
+            <tr style="margin-top: 100px">
+                <th>{{$item+1}}</th>
+                <th>
+                    <p style="font-size: 20px">{{$data[$item]->title}}</p>
+                    <p>{{$data[$item]->description}}<a href="{{$data[$item]->link}}">Click here</a></p>
+                </th>
+                <th>
+                    <a href="{{route('view.editPost',['id'=>$data[$item]->id])}}"><button>Edit</button></a>
+                    <a href="{{route('deletePost',['id'=>$data[$item]->id])}}"><button>Delete</button></a>
+                </th>
+            </tr>
+        @endfor
+    </table>
+    <div>
+        {{ $data->links() }}
+    @if(Session::has('user'))
+            <a href="{{ route('view.createPost') }}">New Post</a>
     @endif
-        <div class="post">
-            <form action="{{route('createPost')}}" method="post">
-                @csrf
-                <select name="categories" id="categories">
-                    @foreach($data as $item)
-                    <option value="{{$item->id}}">{{$item->name}}</option>
-                    @endforeach
-                </select>
-                <input type="text" name="title" placeholder="Title" >
-                <textarea style="height: 100px; font-family: 'Nunito', sans-serif;" rows = "5" cols = "60" name = "description" placeholder="Description"></textarea>
-                <input type="text" name="link" placeholder="Link" >
-                @if ($errors->any())
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                @endif
-                <button style="margin: 20px 500px 200px  ; width: 100px; height: 40px; ">Add</button>
-            </form>
-        </div>
-    </body>
 </html>
