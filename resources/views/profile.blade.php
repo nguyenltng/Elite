@@ -28,7 +28,7 @@
     <link rel="stylesheet" href="{{asset('css/1.css')}}" />
 </head>
 <body>
-    @include('welcome')
+    @include('header')
     <div class="login-food">
         <div class="container">
             <div class="row">

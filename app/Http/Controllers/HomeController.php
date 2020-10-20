@@ -2,65 +2,61 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
+use App\Http\Requests\LoginRequest;
+use App\Model\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\View;
-use Symfony\Component\Console\Input\Input;
 
 class HomeController extends Controller
 {
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function showLogin()
     {
         return view('login');
     }
 
-    public function doLogin(Request $request)
+    /**
+     * @param LoginRequest $request
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     */
+    public function doLogin(LoginRequest $request)
     {
-        $rules = array(
-            'email' => 'required|email',
-            'password' => 'required|alphaNum|min:3'
-        );
-
-        $validator = Validator::make($request->all(), $rules);
-
-        if ($validator->fails()) {
-            return Redirect::to('login')
-                ->withErrors($validator)
-                ->withInput($request->except('password'));
+        if (Auth::attempt($request->only('email','password'))) {
+            $data['user'] = User::where('email', $request->get('email'))->first();
+            session(['user'=>'1']);
+            return redirect()->route('viewProfile', ['id'=>$data['user']->id]);
         } else {
-            // create our user data for the authentication
-            $userdata = array(
-                'email' => $request->get('email'),
-                'password' => $request->get('password')
-            );
-            if (Auth::attempt($userdata)) {
-                //$data['id'] = Auth::id();
-                $data['user'] = User::query()->where('email', $request->get('email'))->first();
-                //return route('viewProfile',['id'=>Auth::id()]);
-                return redirect()->route('viewProfile', ['id'=>$data['user']->id]);
-            } else {
-                return view('login');
-            }
-
+            session()->flash('message', 'Something wrong!');
+            return view('login');
         }
     }
+
+    /**
+     * @param $id
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function showProfile($id)
     {
-        $data['id'] = $id;
         $data['user']= User::find($id);
         return view('profile',$data);
     }
 
-    public function doLogout()
+    /**
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function doLogout(Request $request)
     {
         Auth::logout();
+        $request->session()->forget('user');
         return Redirect::to('/');
     }
 
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function showRegister()
     {
         return view('register');

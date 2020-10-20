@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class LoginRequest extends FormRequest
+class UpdatePostRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,11 +24,11 @@ class LoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'email'    => 'required|email',
-            'password' => 'bail|required|alpha_num|min:3   '
+            'title'     => 'bail|required',
+            'description'    => 'bail|required',
+            'link' => 'bail|required',
         ];
     }
-
     /**
      * Get the error messages for the defined validation rules.
      *
@@ -37,11 +37,9 @@ class LoginRequest extends FormRequest
     public function messages()
     {
         return [
-            'email.required' => 'Please enter your email',
-            'email.email' =>'Please enter your email.',
-            'password.required' => 'Please enter your password.',
-            'password.min' => 'Password least 3 char.'
+            'title.required' => 'Title is empty.',
+            'description.required' => 'Description is empty.',
+            'link.required' => 'Link is empty.'
         ];
     }
-
 }

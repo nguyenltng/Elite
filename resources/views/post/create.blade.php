@@ -61,7 +61,7 @@
             .m-b-md {
                 margin-bottom: 30px;
             }
-            .post input,textarea {
+            .post input,textarea,select {
                 display: flex;
                 width: 60%;
                 margin-left: 50px;
@@ -74,7 +74,7 @@
         </style>
     </head>
     <body>
-    @include('welcome')
+    @include('header')
     @section('title','Post')
     <h1>New Post</h1>
     @if(Session::has('message'))
@@ -83,16 +83,22 @@
         <div class="post">
             <form action="{{route('createPost')}}" method="post">
                 @csrf
+                <select name="categories" id="categories">
+                    @foreach($data as $item)
+                    <option value="{{$item->id}}">{{$item->name}}</option>
+                    @endforeach
+                </select>
+                <input id="image" type="file" name="image">
                 <input type="text" name="title" placeholder="Title" >
                 <textarea style="height: 100px; font-family: 'Nunito', sans-serif;" rows = "5" cols = "60" name = "description" placeholder="Description"></textarea>
                 <input type="text" name="link" placeholder="Link" >
+                @if ($errors->any())
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                @endif
                 <button style="margin: 20px 500px 200px  ; width: 100px; height: 40px; ">Add</button>
             </form>
-            @if ($errors->any())
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            @endif
         </div>
     </body>
 </html>

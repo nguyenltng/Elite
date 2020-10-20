@@ -27,6 +27,7 @@
 </head>
 
 <body>
+@include('header')
     <div class="login-food">
         <div class="container">
             <div class="row">
@@ -34,6 +35,9 @@
                 <div class="col-sm-6">
                     <div class="login text-xs-center">
                         <h3>Login</h3>
+                        @if(Session::has('message'))
+                            <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
+                        @endif
                         <form action="{{route('login')}}" method="post">
                             @csrf
                             <input type="text" name="email" placeholder="Email">
