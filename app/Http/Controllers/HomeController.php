@@ -19,6 +19,16 @@ class HomeController extends Controller
     }
 
     /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function showAdmin()
+    {
+        $userList = (new UserController)->getListUser();
+        $roleList = (new RoleController)->getListRole();
+        return view('admin',['user' => $userList, 'role' => $roleList]);
+    }
+
+    /**
      * @param LoginRequest $request
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
@@ -26,7 +36,7 @@ class HomeController extends Controller
     {
         if (Auth::attempt($request->only('email','password'))) {
             $data['user'] = User::where('email', $request->get('email'))->first();
-            $roles = User::find($data['user']->id)->roles;
+            $roles = User::find($data['user']->id)->roles()->get();
             foreach($roles as $role){
                 $listRole[] = $role->name;
             }

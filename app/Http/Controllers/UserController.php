@@ -66,27 +66,9 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * @param DeleteUserRequest $request
-     * @param $idRole
-     * @return mixed
-     */
-    public function deleteRole(DeleteUserRequest $request,$idRole)
+    public function getListUser()
     {
-        $role = Role::findOrFail($idRole);
-        $role->users()->delete();
-        $role->users()->detach();
-        return $role;
-    }
-
-    /**
-     *
-     */
-    public function addRole()
-    {
-        $user = User::find(Auth::user()->getAuthIdentifier());
-        $user->roles()
-            ->attach(Role::where('name', 'writer')->first());
+        return User::all();
     }
 
 }

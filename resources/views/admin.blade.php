@@ -60,34 +60,50 @@
             .m-b-md {
                 margin-bottom: 30px;
             }
+            .admin{
+                font-size: 50px;
+                margin-left: 50px;
+            }
+            .add-role input select{
+                width: 100px; height: 40px;
+            }
         </style>
     </head>
     <body>
-        <div class="flex-center position-ref">
-            <div class="top-right links">
-                @if (Route::has('login'))
-                    @auth
-                        <a href="{{ url('/') }}">Home</a>
-                        <a href="{{ route('viewProfile',\Illuminate\Support\Facades\Auth::id()) }}">Profile</a>
-                        <a href="{{ route('viewListPost') }}">Post</a>
-                        @if(Session::has('roles'))
-                            @if(in_array('admin', session()->get('roles')))
-                                <a href="{{ route('admin') }}">Admin</a>
-                            @endif
-                        @endif
-                    @endauth
-                @else
-                    <a href="{{ url('/') }}">Home</a>
-                    <a href="{{ route('login') }}">Login</a>
-
-                    @if (Route::has('register'))
-                        <a href="{{ route('register') }}">Register</a>
-                    @endif
-                @endif
-            </div>
-
+       @include('header')
+        <div class="admin">
+            Admin
         </div>
-
+        <div class="add-role">
+            <form action="{{route('addRole')}}" method="post" enctype="multipart/form-data">
+                @csrf
+                New Role <input type="text" name="role"><br>
+                <button style="width: 100px; height: 40px; ">Add </button>
+                @if ($errors->any())
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                @endif
+            </form>
+        </div>
+       <div class="add-role">
+           <form action="{{route('addRoleToUser')}}" method="post" enctype="multipart/form-data">
+               @csrf
+               Choose Role
+               <select name="user" id="user">
+                   @foreach($user as $item)
+                       <option value="{{$item->id}}">{{$item->name}}</option>
+                   @endforeach
+               </select><br>
+               Choose user
+               <select name="role" id="role">
+                   @foreach($role as $item)
+                       <option value="{{$item->id}}">{{$item->name}}</option>
+                   @endforeach
+               </select><br>
+               <button style="width: 100px; height: 40px; ">Add Role</button>
+           </form>
+       </div>
 
     </body>
 </html>

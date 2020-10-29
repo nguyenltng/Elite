@@ -51,7 +51,6 @@ class User extends Authenticatable
         'update_at',
         'delete_at',
     ];
-
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
