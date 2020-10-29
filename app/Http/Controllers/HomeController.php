@@ -21,11 +21,29 @@ class HomeController extends Controller
     /**
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function showAdmin()
+    public function showUserForAdminPage()
     {
         $userList = (new UserController)->getListUser();
         $roleList = (new RoleController)->getListRole();
-        return view('admin',['user' => $userList, 'role' => $roleList]);
+        return view('admin.user', ['user' =>$userList, 'role' => $roleList]);
+    }
+
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function showRoleForAdminPage()
+    {
+        $roleList = (new RoleController)->getListRole();
+        return view('admin.role', ['data'=>$roleList]);
+    }
+
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function showAdmin()
+    {
+
+        return view('admin.main');
     }
 
     /**

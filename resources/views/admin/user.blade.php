@@ -72,20 +72,9 @@
     <body>
        @include('header')
         <div class="admin">
-            Admin
+            Admin  -  User
         </div>
-        <div class="add-role">
-            <form action="{{route('addRole')}}" method="post" enctype="multipart/form-data">
-                @csrf
-                New Role <input type="text" name="role"><br>
-                <button style="width: 100px; height: 40px; ">Add </button>
-                @if ($errors->any())
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                @endif
-            </form>
-        </div>
+
        <div class="add-role">
            <form action="{{route('addRoleToUser')}}" method="post" enctype="multipart/form-data">
                @csrf

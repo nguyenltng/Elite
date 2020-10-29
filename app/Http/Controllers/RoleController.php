@@ -3,13 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\DeleteUserRequest;
-use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RoleRequest;
-use App\Model\Category;
 use App\Model\Role;
 use App\Model\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
 
 class RoleController extends Controller
 {
@@ -24,17 +21,23 @@ class RoleController extends Controller
         $role = Role::findOrFail($idRole);
         $role->users()->delete();
         $role->users()->detach();
-        return $role;
+        Role::find($idRole)->delete();
+        return redirect()->route('admin.role');
     }
 
     /**
-     *
+     * @param RoleRequest $request
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function addRoleToUser()
+    public function addRoleToUser(RoleRequest $request)
     {
-        $user = User::find(Auth::user()->getAuthIdentifier());
+        $idUser = $request->get('user');
+        $idRole = $request->get('role');
+        $createdBy = User::find(Auth::id())->name;
+        $user = User::find($idUser);
         $user->roles()
-            ->attach(Role::where('name', 'editor')->first(), ['created_by' =>'server']);
+            ->attach(Role::where('id', $idRole)->first(), ['created_by' =>$createdBy]);
+        return redirect()->route('admin');
     }
 
     /**
@@ -43,7 +46,6 @@ class RoleController extends Controller
      */
     public function addRole(RoleRequest $request)
     {
-        dd($request->all());
         Role::create(['name'=> $request->get('role')]);
         session()->flash('message', 'Role is created');
         return redirect()->route('admin');
