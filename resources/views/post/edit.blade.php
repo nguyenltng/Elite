@@ -61,7 +61,7 @@
             .m-b-md {
                 margin-bottom: 30px;
             }
-            .post input,textarea {
+            .post input, textarea{
                 display: flex;
                 width: 60%;
                 margin-left: 50px;
@@ -71,12 +71,16 @@
                 border-radius: 5px;
                 padding-left: 25px;
             }
+            #img{
+                margin-left: 50px;
+                padding-left: 25px;
+            }
         </style>
     </head>
     <body>
     @include('header')
     @section('title','Post')
-    <h1>New Post</h1>
+    <h1>Edit Post</h1>
     @if(Session::has('message'))
         <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
     @endif

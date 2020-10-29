@@ -1,0 +1,401 @@
+Index: app/Http/Controllers/PostController.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?php\r\n\r\nnamespace App\\Http\\Controllers;\r\n\r\nuse App\\Http\\Requests\\CreatePostRequest;\r\nuse App\\Http\\Requests\\CreateUserRequest;\r\nuse App\\Http\\Requests\\UpdatePostRequest;\r\nuse App\\Model\\Post;\r\nuse App\\Model\\User;\r\nuse Illuminate\\Http\\Request;\r\nuse Illuminate\\Support\\Carbon;\r\nuse Illuminate\\Support\\Facades\\Auth;\r\nuse Illuminate\\Support\\Facades\\DB;\r\nuse Illuminate\\Support\\Facades\\Hash;\r\nuse Illuminate\\Support\\Facades\\Redirect;\r\nuse Illuminate\\Support\\Facades\\Validator;\r\nuse Illuminate\\Support\\Str;\r\n\r\nclass PostController extends Controller\r\n{\r\n    /**\r\n     * @return \\Illuminate\\Contracts\\Foundation\\Application|\\Illuminate\\Contracts\\View\\Factory|\\Illuminate\\View\\View\r\n     */\r\n    public function showListPost()\r\n    {\r\n        $data = $this->getListPost();\r\n        $data = DB::table('posts')->paginate(5);\r\n\r\n        return view('post.list', ['data' => $data]);\r\n    }\r\n\r\n    /**\r\n     * @return \\Illuminate\\Contracts\\Foundation\\Application|\\Illuminate\\Contracts\\View\\Factory|\\Illuminate\\View\\View\r\n     */\r\n    public function showViewCreatePost()\r\n    {\r\n        return view('post.create', ['name' => 'James']);\r\n    }\r\n\r\n    /**\r\n     * @param $id\r\n     * @return \\Illuminate\\Contracts\\Foundation\\Application|\\Illuminate\\Contracts\\View\\Factory|\\Illuminate\\View\\View\r\n     */\r\n    public function showViewEditPost($id)\r\n    {\r\n        $data = Post::find($id);\r\n        return view('post.edit', ['data' => $data]);\r\n    }\r\n\r\n    /**\r\n     * @return \\Illuminate\\Contracts\\Pagination\\LengthAwarePaginator\r\n     */\r\n    public function getListPost()\r\n    {\r\n        $post = DB::table('posts')->paginate(5);\r\n        return $post;\r\n    }\r\n\r\n    /**\r\n     * @param CreatePostRequest $request\r\n     * @return \\Illuminate\\Http\\RedirectResponse\r\n     */\r\n    public function createPost(CreatePostRequest $request)\r\n    {\r\n        $user_id = Auth::id();\r\n        if (!$user_id) {\r\n            session()->flash('message', 'Please login first !!');\r\n            return Redirect::to('post/create');\r\n        } else {\r\n            Post::create([\r\n                'user_id' => $user_id,\r\n                'title' => $request->get('title'),\r\n                'description' => $request->get('description'),\r\n                'link' => $request->get('link'),\r\n                'created_at' => now(),\r\n            ]);\r\n            session()->flash('message', 'Your post has been posted');\r\n            DB::commit();\r\n\r\n            return redirect()->route('viewListPost');\r\n        }\r\n    }\r\n\r\n    public function editPost(UpdatePostRequest $request, $id)\r\n    {\r\n        $user_id = Auth::id();\r\n        if (!$user_id) {\r\n            session()->flash('message', 'Please login first !!');\r\n            return redirect()->route('view.editPost', ['id' => $id]);\r\n        } else {\r\n            DB::beginTransaction();\r\n            DB::table('posts')\r\n                ->where('id', $id)\r\n                ->update([\r\n                    'title' => $request->get('title'),\r\n                    'description' => $request->get('description'),\r\n                    'link' => ($request->get('link')),\r\n                ]);\r\n            session()->flash('message', 'Your post is updated');\r\n            DB::commit();\r\n\r\n            return redirect()->route('viewListPost');\r\n        }\r\n    }\r\n\r\n    public function deletePost($id)\r\n    {\r\n        DB::beginTransaction();\r\n        DB::table('posts')\r\n            ->where('id', $id)\r\n            ->delete();\r\n        DB::commit();\r\n        return redirect()->route('viewListPost');\r\n    }\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/Http/Controllers/PostController.php	(revision 30a6804fde8e733a7fe8de5c74b53baf309367a9)
++++ app/Http/Controllers/PostController.php	(date 1602815440568)
+@@ -7,6 +7,7 @@
+ use App\Http\Requests\UpdatePostRequest;
+ use App\Model\Post;
+ use App\Model\User;
++use Illuminate\Database\Eloquent\ModelNotFoundException;
+ use Illuminate\Http\Request;
+ use Illuminate\Support\Carbon;
+ use Illuminate\Support\Facades\Auth;
+@@ -81,6 +82,11 @@
+         }
+     }
+ 
++    /**
++     * @param UpdatePostRequest $request
++     * @param $id
++     * @return \Illuminate\Http\RedirectResponse
++     */
+     public function editPost(UpdatePostRequest $request, $id)
+     {
+         $user_id = Auth::id();
+@@ -103,6 +109,10 @@
+         }
+     }
+ 
++    /**
++     * @param $id
++     * @return \Illuminate\Http\RedirectResponse
++     */
+     public function deletePost($id)
+     {
+         DB::beginTransaction();
+@@ -113,4 +123,19 @@
+         return redirect()->route('viewListPost');
+     }
+ 
++
++    /**
++     * @param Request $request
++     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
++     */
++    public function search(Request $request)
++    {
++
++        $searchTerm = $request->input('query');
++
++        $searchResults = DB::table('posts')->where('title','like','$searchTerm')->get();
++        dd($searchResults);
++
++        return view('post.search-results', ['searchResults'=> $searchResults]);
++    }
+ }
+Index: resources/views/post/list.blade.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><!DOCTYPE html>\r\n<html lang=\"{{ str_replace('_', '-', app()->getLocale()) }}\">\r\n    <head>\r\n        <meta charset=\"utf-8\">\r\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n\r\n        <title>Laravel</title>\r\n\r\n        <!-- Fonts -->\r\n        <link href=\"https://fonts.googleapis.com/css?family=Nunito:200,600\" rel=\"stylesheet\">\r\n        <link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\" integrity=\"sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T\" crossorigin=\"anonymous\">\r\n\r\n        <!-- Styles -->\r\n        <style>\r\n            html, body {\r\n                background-color: #fff;\r\n                color: #636b6f;\r\n                font-family: 'Nunito', sans-serif;\r\n                font-weight: 200;\r\n                height: 100vh;\r\n                margin: 0;\r\n            }\r\n\r\n            .full-height {\r\n                height: 100vh;\r\n            }\r\n\r\n            .flex-center {\r\n                align-items: center;\r\n                display: flex;\r\n                justify-content: center;\r\n            }\r\n\r\n            .position-ref {\r\n                position: relative;\r\n            }\r\n\r\n            .top-right {\r\n                position: absolute;\r\n                right: 10px;\r\n                top: 18px;\r\n            }\r\n\r\n            .content {\r\n                text-align: center;\r\n            }\r\n\r\n            .title {\r\n                font-size: 84px;\r\n            }\r\n\r\n            .links > a {\r\n                color: #636b6f;\r\n                padding: 0 25px;\r\n                font-size: 13px;\r\n                font-weight: 600;\r\n                letter-spacing: .1rem;\r\n                text-decoration: none;\r\n                text-transform: uppercase;\r\n            }\r\n\r\n            .m-b-md {\r\n                margin-bottom: 30px;\r\n            }\r\n        </style>\r\n    </head>\r\n    <body>\r\n    @include('welcome')\r\n    @section('title','Post')\r\n    <h1>Post</h1>\r\n    <table style=\"width:100%\">\r\n        <tr>\r\n            <th>NUMBER</th>\r\n            <th></th>\r\n        </tr>\r\n        @for($item = 0; $item < sizeof($data); $item++)\r\n            <tr style=\"margin-top: 100px\">\r\n                <th>{{$item+1}}</th>\r\n                <th>\r\n                    <p style=\"font-size: 20px\">{{$data[$item]->title}}</p>\r\n                    <p>{{$data[$item]->description}}<a href=\"{{$data[$item]->link}}\">Click here</a></p>\r\n                </th>\r\n                <th>\r\n                    <a href=\"{{route('view.editPost',['id'=>$data[$item]->id])}}\"><button>Edit</button></a>\r\n                    <a href=\"{{route('deletePost',['id'=>$data[$item]->id])}}\"><button>Delete</button></a>\r\n                </th>\r\n            </tr>\r\n        @endfor\r\n    </table>\r\n    <div>\r\n        {{ $data->links() }}\r\n    </div>\r\n        <a href=\"{{ route('view.createPost') }}\">New Post</a>\r\n    </body>\r\n</html>\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- resources/views/post/list.blade.php	(revision 30a6804fde8e733a7fe8de5c74b53baf309367a9)
++++ resources/views/post/list.blade.php	(date 1602756375728)
+@@ -68,6 +68,10 @@
+     @include('welcome')
+     @section('title','Post')
+     <h1>Post</h1>
++    <form method="get" action="{{ route('search.result') }}" class="form-inline mr-auto">
++        <input type="text" name="query" value="{{ isset($searchterm) ? $searchterm : ''  }}" class="form-control col-sm-8"  placeholder="Search events or blog posts..." aria-label="Search">
++        <button class="btn aqua-gradient btn-rounded btn-sm my-0 waves-effect waves-light" type="submit">Search</button>
++    </form>
+     <table style="width:100%">
+         <tr>
+             <th>NUMBER</th>
+Index: routes/web.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?php\r\n\r\nuse Illuminate\\Support\\Facades\\Route;\r\n\r\n/*\r\n|--------------------------------------------------------------------------\r\n| Web Routes\r\n|--------------------------------------------------------------------------\r\n|\r\n| Here is where you can register web routes for your application. These\r\n| routes are loaded by the RouteServiceProvider within a group which\r\n| contains the \"web\" middleware group. Now create something great!\r\n|\r\n*/\r\n\r\nRoute::get('/', function () {\r\n    return view('welcome');\r\n});\r\nRoute::get('/profile/{id}', 'HomeController@showProfile')->name('viewProfile');\r\nRoute::post('/update/{id}', 'UserController@update')->name('updateUser');\r\n\r\nRoute::get('/user/{id}', 'UserController@showEdit')->name('editUser');\r\n\r\nRoute::get('logout', array('uses' => 'HomeController@doLogout'))->name('logout');\r\n\r\nRoute::group(['middleware' => 'CheckLogin'], function () {\r\n    Route::get('/login', 'HomeController@showLogin')->name('viewLogin');\r\n    Route::post('/login', 'HomeController@doLogin')->name('login');\r\n});\r\n\r\nRoute::group(['middleware' => 'web'], function () {\r\n    Route::post('/register', 'UserController@create')->name('register');\r\n    Route::get('/register', 'HomeController@showRegister')->name('viewRegister');\r\n\r\n});\r\n\r\nRoute::get('/post','PostController@showListPost')->name('viewListPost');\r\nRoute::get('/post/create', 'PostController@showViewCreatePost')->name('view.createPost');\r\nRoute::post('/post/create', 'PostController@createPost')->name('createPost');\r\nRoute::get('/post/edit/{id}', 'PostController@showViewEditPost')->name('view.editPost');\r\nRoute::post('/post/edit/{id}', 'PostController@editPost')->name('editPost');\r\nRoute::get('/post/delete/{id}', 'PostController@deletePost')->name('deletePost');\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- routes/web.php	(revision 30a6804fde8e733a7fe8de5c74b53baf309367a9)
++++ routes/web.php	(date 1602756518169)
+@@ -40,3 +40,5 @@
+ Route::get('/post/edit/{id}', 'PostController@showViewEditPost')->name('view.editPost');
+ Route::post('/post/edit/{id}', 'PostController@editPost')->name('editPost');
+ Route::get('/post/delete/{id}', 'PostController@deletePost')->name('deletePost');
++
++Route::get('/post/search-results', 'PostController@search')->name('search.result');
+Index: config/auth.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?php\r\n\r\nreturn [\r\n\r\n    /*\r\n    |--------------------------------------------------------------------------\r\n    | Authentication Defaults\r\n    |--------------------------------------------------------------------------\r\n    |\r\n    | This option controls the default authentication \"guard\" and password\r\n    | reset options for your application. You may change these defaults\r\n    | as required, but they're a perfect start for most applications.\r\n    |\r\n    */\r\n\r\n    'defaults' => [\r\n        'guard' => 'web',\r\n        'passwords' => 'users',\r\n    ],\r\n\r\n    /*\r\n    |--------------------------------------------------------------------------\r\n    | Authentication Guards\r\n    |--------------------------------------------------------------------------\r\n    |\r\n    | Next, you may define every authentication guard for your application.\r\n    | Of course, a great default configuration has been defined for you\r\n    | here which uses session storage and the Eloquent user provider.\r\n    |\r\n    | All authentication drivers have a user provider. This defines how the\r\n    | users are actually retrieved out of your database or other storage\r\n    | mechanisms used by this application to persist your user's data.\r\n    |\r\n    | Supported: \"session\", \"token\"\r\n    |\r\n    */\r\n\r\n    'guards' => [\r\n        'web' => [\r\n            'driver' => 'session',\r\n            'provider' => 'users',\r\n        ],\r\n\r\n        'api' => [\r\n            'driver' => 'token',\r\n            'provider' => 'users',\r\n            'hash' => false,\r\n        ],\r\n    ],\r\n\r\n    /*\r\n    |--------------------------------------------------------------------------\r\n    | User Providers\r\n    |--------------------------------------------------------------------------\r\n    |\r\n    | All authentication drivers have a user provider. This defines how the\r\n    | users are actually retrieved out of your database or other storage\r\n    | mechanisms used by this application to persist your user's data.\r\n    |\r\n    | If you have multiple user tables or models you may configure multiple\r\n    | sources which represent each model / table. These sources may then\r\n    | be assigned to any extra authentication guards you have defined.\r\n    |\r\n    | Supported: \"database\", \"eloquent\"\r\n    |\r\n    */\r\n\r\n    'providers' => [\r\n        'users' => [\r\n            'driver' => 'eloquent',\r\n            'model' => App\\User::class,\r\n        ],\r\n\r\n        // 'users' => [\r\n        //     'driver' => 'database',\r\n        //     'table' => 'users',\r\n        // ],\r\n    ],\r\n\r\n    /*\r\n    |--------------------------------------------------------------------------\r\n    | Resetting Passwords\r\n    |--------------------------------------------------------------------------\r\n    |\r\n    | You may specify multiple password reset configurations if you have more\r\n    | than one user table or model in the application and you want to have\r\n    | separate password reset settings based on the specific user types.\r\n    |\r\n    | The expire time is the number of minutes that the reset token should be\r\n    | considered valid. This security feature keeps tokens short-lived so\r\n    | they have less time to be guessed. You may change this as needed.\r\n    |\r\n    */\r\n\r\n    'passwords' => [\r\n        'users' => [\r\n            'provider' => 'users',\r\n            'table' => 'password_resets',\r\n            'expire' => 60,\r\n            'throttle' => 60,\r\n        ],\r\n    ],\r\n\r\n    /*\r\n    |--------------------------------------------------------------------------\r\n    | Password Confirmation Timeout\r\n    |--------------------------------------------------------------------------\r\n    |\r\n    | Here you may define the amount of seconds before a password confirmation\r\n    | times out and the user is prompted to re-enter their password via the\r\n    | confirmation screen. By default, the timeout lasts for three hours.\r\n    |\r\n    */\r\n\r\n    'password_timeout' => 10800,\r\n\r\n];\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- config/auth.php	(revision 30a6804fde8e733a7fe8de5c74b53baf309367a9)
++++ config/auth.php	(date 1602736329709)
+@@ -68,7 +68,7 @@
+     'providers' => [
+         'users' => [
+             'driver' => 'eloquent',
+-            'model' => App\User::class,
++            'model' => App\Model\User::class,
+         ],
+ 
+         // 'users' => [
+Index: resources/views/post/search-results.blade.php
+===================================================================
+--- resources/views/post/search-results.blade.php	(date 1602813675877)
++++ resources/views/post/search-results.blade.php	(date 1602813675877)
+@@ -0,0 +1,106 @@
++<!DOCTYPE html>
++<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
++    <head>
++        <meta charset="utf-8">
++        <meta name="viewport" content="width=device-width, initial-scale=1">
++
++        <title>Laravel</title>
++
++        <!-- Fonts -->
++        <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
++        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
++
++        <!-- Styles -->
++        <style>
++            html, body {
++                background-color: #fff;
++                color: #636b6f;
++                font-family: 'Nunito', sans-serif;
++                font-weight: 200;
++                height: 100vh;
++                margin: 0;
++            }
++
++            .full-height {
++                height: 100vh;
++            }
++
++            .flex-center {
++                align-items: center;
++                display: flex;
++                justify-content: center;
++            }
++
++            .position-ref {
++                position: relative;
++            }
++
++            .top-right {
++                position: absolute;
++                right: 10px;
++                top: 18px;
++            }
++
++            .content {
++                text-align: center;
++            }
++
++            .title {
++                font-size: 84px;
++            }
++
++            .links > a {
++                color: #636b6f;
++                padding: 0 25px;
++                font-size: 13px;
++                font-weight: 600;
++                letter-spacing: .1rem;
++                text-decoration: none;
++                text-transform: uppercase;
++            }
++
++            .m-b-md {
++                margin-bottom: 30px;
++            }
++        </style>
++    </head>
++    <body>
++    @include('welcome')
++    @section('title','Post')
++    <h1>Post</h1>
++    <form method="get" action="{{ route('search.result') }}" class="form-inline mr-auto">
++        <input type="text" name="query" value="{{ isset($searchTerm) ? $searchTerm : ''  }}" class="form-control col-sm-8"  placeholder="Search events or blog posts..." aria-label="Search">
++        <button class="btn aqua-gradient btn-rounded btn-sm my-0 waves-effect waves-light" type="submit">Search</button>
++    </form>
++    <table style="width:100%">
++        <tr>
++            <th>NUMBER</th>
++            <th></th>
++        </tr>
++        @if(isset($searchResults))
++            @if ($searchResults-> isEmpty())
++                <h2>Sorry, no results found for the term <b>"{{ $searchterm }}"</b>.</h2>
++            @else
++                @for($item = 0; $item < sizeof($searchResults); $item++)
++                    <tr style="margin-top: 100px">
++                        <th>{{$item+1}}</th>
++                        <th>
++                            <p style="font-size: 20px">{{$searchResults[$item]->title}}</p>
++                            <p>{{$searchResults[$item]->description}}<a href="{{$searchResults[$item]->link}}">Click here</a></p>
++                        </th>
++                        <th>
++                            <a href="{{route('view.editPost',['id'=>$searchResults[$item]->id])}}"><button>Edit</button></a>
++                            <a href="{{route('deletePost',['id'=>$searchResults[$item]->id])}}"><button>Delete</button></a>
++                        </th>
++                    </tr>
++                @endfor
++            @endif
++        @endif
++
++    </table>
++    <div>
++        {{ $searchResults->links() }}
++    </div>
++        <a href="{{ route('view.createPost') }}">New Post</a>
++    </body>
++</html>
+Index: config/app.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?php\r\n\r\nreturn [\r\n\r\n    /*\r\n    |--------------------------------------------------------------------------\r\n    | Application Name\r\n    |--------------------------------------------------------------------------\r\n    |\r\n    | This value is the name of your application. This value is used when the\r\n    | framework needs to place the application's name in a notification or\r\n    | any other location as required by the application or its packages.\r\n    |\r\n    */\r\n\r\n    'name' => env('APP_NAME', 'Laravel'),\r\n\r\n    /*\r\n    |--------------------------------------------------------------------------\r\n    | Application Environment\r\n    |--------------------------------------------------------------------------\r\n    |\r\n    | This value determines the \"environment\" your application is currently\r\n    | running in. This may determine how you prefer to configure various\r\n    | services the application utilizes. Set this in your \".env\" file.\r\n    |\r\n    */\r\n\r\n    'env' => env('APP_ENV', 'production'),\r\n\r\n    /*\r\n    |--------------------------------------------------------------------------\r\n    | Application Debug Mode\r\n    |--------------------------------------------------------------------------\r\n    |\r\n    | When your application is in debug mode, detailed error messages with\r\n    | stack traces will be shown on every error that occurs within your\r\n    | application. If disabled, a simple generic error page is shown.\r\n    |\r\n    */\r\n\r\n    'debug' => (bool) env('APP_DEBUG', false),\r\n\r\n    /*\r\n    |--------------------------------------------------------------------------\r\n    | Application URL\r\n    |--------------------------------------------------------------------------\r\n    |\r\n    | This URL is used by the console to properly generate URLs when using\r\n    | the Artisan command line tool. You should set this to the root of\r\n    | your application so that it is used when running Artisan tasks.\r\n    |\r\n    */\r\n\r\n    'url' => env('APP_URL', 'http://localhost'),\r\n\r\n    'asset_url' => env('ASSET_URL', null),\r\n\r\n    /*\r\n    |--------------------------------------------------------------------------\r\n    | Application Timezone\r\n    |--------------------------------------------------------------------------\r\n    |\r\n    | Here you may specify the default timezone for your application, which\r\n    | will be used by the PHP date and date-time functions. We have gone\r\n    | ahead and set this to a sensible default for you out of the box.\r\n    |\r\n    */\r\n\r\n    'timezone' => 'UTC',\r\n\r\n    /*\r\n    |--------------------------------------------------------------------------\r\n    | Application Locale Configuration\r\n    |--------------------------------------------------------------------------\r\n    |\r\n    | The application locale determines the default locale that will be used\r\n    | by the translation service provider. You are free to set this value\r\n    | to any of the locales which will be supported by the application.\r\n    |\r\n    */\r\n\r\n    'locale' => 'vi',\r\n\r\n    /*\r\n    |--------------------------------------------------------------------------\r\n    | Application Fallback Locale\r\n    |--------------------------------------------------------------------------\r\n    |\r\n    | The fallback locale determines the locale to use when the current one\r\n    | is not available. You may change the value to correspond to any of\r\n    | the language folders that are provided through your application.\r\n    |\r\n    */\r\n\r\n    'fallback_locale' => 'vi',\r\n\r\n    /*\r\n    |--------------------------------------------------------------------------\r\n    | Faker Locale\r\n    |--------------------------------------------------------------------------\r\n    |\r\n    | This locale will be used by the Faker PHP library when generating fake\r\n    | data for your database seeds. For example, this will be used to get\r\n    | localized telephone numbers, street address information and more.\r\n    |\r\n    */\r\n\r\n    'faker_locale' => 'en_US',\r\n\r\n    /*\r\n    |--------------------------------------------------------------------------\r\n    | Encryption Key\r\n    |--------------------------------------------------------------------------\r\n    |\r\n    | This key is used by the Illuminate encrypter service and should be set\r\n    | to a random, 32 character string, otherwise these encrypted strings\r\n    | will not be safe. Please do this before deploying an application!\r\n    |\r\n    */\r\n\r\n    'key' => env('APP_KEY'),\r\n\r\n    'cipher' => 'AES-256-CBC',\r\n\r\n    /*\r\n    |--------------------------------------------------------------------------\r\n    | Autoloaded Service Providers\r\n    |--------------------------------------------------------------------------\r\n    |\r\n    | The service providers listed here will be automatically loaded on the\r\n    | request to your application. Feel free to add your own services to\r\n    | this array to grant expanded functionality to your applications.\r\n    |\r\n    */\r\n\r\n    'providers' => array(\r\n\r\n        /*\r\n         * Laravel Framework Service Providers...\r\n         */\r\n        Illuminate\\Auth\\AuthServiceProvider::class,\r\n        Illuminate\\Broadcasting\\BroadcastServiceProvider::class,\r\n        Illuminate\\Bus\\BusServiceProvider::class,\r\n        Illuminate\\Cache\\CacheServiceProvider::class,\r\n        Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider::class,\r\n        Illuminate\\Cookie\\CookieServiceProvider::class,\r\n        Illuminate\\Database\\DatabaseServiceProvider::class,\r\n        Illuminate\\Encryption\\EncryptionServiceProvider::class,\r\n        Illuminate\\Filesystem\\FilesystemServiceProvider::class,\r\n        Illuminate\\Foundation\\Providers\\FoundationServiceProvider::class,\r\n        Illuminate\\Hashing\\HashServiceProvider::class,\r\n        Illuminate\\Mail\\MailServiceProvider::class,\r\n        Illuminate\\Notifications\\NotificationServiceProvider::class,\r\n        Illuminate\\Pagination\\PaginationServiceProvider::class,\r\n        Illuminate\\Pipeline\\PipelineServiceProvider::class,\r\n        Illuminate\\Queue\\QueueServiceProvider::class,\r\n        Illuminate\\Redis\\RedisServiceProvider::class,\r\n        Illuminate\\Auth\\Passwords\\PasswordResetServiceProvider::class,\r\n        Illuminate\\Session\\SessionServiceProvider::class,\r\n        Illuminate\\Translation\\TranslationServiceProvider::class,\r\n        Illuminate\\Validation\\ValidationServiceProvider::class,\r\n        Illuminate\\View\\ViewServiceProvider::class,\r\n        Illuminate\\Support\\Facades\\Route::class,\r\n\r\n        /*\r\n         * Package Service Providers...\r\n         */\r\n\r\n        /*\r\n         * Application Service Providers...\r\n         */\r\n        App\\Providers\\AppServiceProvider::class,\r\n        App\\Providers\\AuthServiceProvider::class,\r\n        // App\\Providers\\BroadcastServiceProvider::class,\r\n        App\\Providers\\EventServiceProvider::class,\r\n        App\\Providers\\RouteServiceProvider::class,\r\n        Spatie\\Permission\\PermissionServiceProvider::class,\r\n\r\n\r\n    ),\r\n\r\n    /*\r\n    |--------------------------------------------------------------------------\r\n    | Class Aliases\r\n    |--------------------------------------------------------------------------\r\n    |\r\n    | This array of class aliases will be registered when this application\r\n    | is started. However, feel free to register as many as you wish as\r\n    | the aliases are \"lazy\" loaded so they don't hinder performance.\r\n    |\r\n    */\r\n\r\n    'aliases' => [\r\n\r\n        'App' => Illuminate\\Support\\Facades\\App::class,\r\n        'Arr' => Illuminate\\Support\\Arr::class,\r\n        'Artisan' => Illuminate\\Support\\Facades\\Artisan::class,\r\n        'Auth' => Illuminate\\Support\\Facades\\Auth::class,\r\n        'Blade' => Illuminate\\Support\\Facades\\Blade::class,\r\n        'Broadcast' => Illuminate\\Support\\Facades\\Broadcast::class,\r\n        'Bus' => Illuminate\\Support\\Facades\\Bus::class,\r\n        'Cache' => Illuminate\\Support\\Facades\\Cache::class,\r\n        'Config' => Illuminate\\Support\\Facades\\Config::class,\r\n        'Cookie' => Illuminate\\Support\\Facades\\Cookie::class,\r\n        'Crypt' => Illuminate\\Support\\Facades\\Crypt::class,\r\n        'DB' => Illuminate\\Support\\Facades\\DB::class,\r\n        'Eloquent' => Illuminate\\Database\\Eloquent\\Model::class,\r\n        'Event' => Illuminate\\Support\\Facades\\Event::class,\r\n        'File' => Illuminate\\Support\\Facades\\File::class,\r\n        'Gate' => Illuminate\\Support\\Facades\\Gate::class,\r\n        'Hash' => Illuminate\\Support\\Facades\\Hash::class,\r\n        'Http' => Illuminate\\Support\\Facades\\Http::class,\r\n        'Lang' => Illuminate\\Support\\Facades\\Lang::class,\r\n        'Log' => Illuminate\\Support\\Facades\\Log::class,\r\n        'Mail' => Illuminate\\Support\\Facades\\Mail::class,\r\n        'Notification' => Illuminate\\Support\\Facades\\Notification::class,\r\n        'Password' => Illuminate\\Support\\Facades\\Password::class,\r\n        'Queue' => Illuminate\\Support\\Facades\\Queue::class,\r\n        'Redirect' => Illuminate\\Support\\Facades\\Redirect::class,\r\n        'Redis' => Illuminate\\Support\\Facades\\Redis::class,\r\n        'Request' => Illuminate\\Support\\Facades\\Request::class,\r\n        'Response' => Illuminate\\Support\\Facades\\Response::class,\r\n        'Route' => Illuminate\\Support\\Facades\\Route::class,\r\n        'Schema' => Illuminate\\Support\\Facades\\Schema::class,\r\n        'Session' => Illuminate\\Support\\Facades\\Session::class,\r\n        'Storage' => Illuminate\\Support\\Facades\\Storage::class,\r\n        'Str' => Illuminate\\Support\\Str::class,\r\n        'URL' => Illuminate\\Support\\Facades\\URL::class,\r\n        'Validator' => Illuminate\\Support\\Facades\\Validator::class,\r\n        'View' => Illuminate\\Support\\Facades\\View::class,\r\n        'Input' => Illuminate\\Support\\Facades\\Request::class,\r\n    ],\r\n\r\n];\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- config/app.php	(revision 30a6804fde8e733a7fe8de5c74b53baf309367a9)
++++ config/app.php	(date 1602738021502)
+@@ -161,7 +161,6 @@
+         Illuminate\Translation\TranslationServiceProvider::class,
+         Illuminate\Validation\ValidationServiceProvider::class,
+         Illuminate\View\ViewServiceProvider::class,
+-        Illuminate\Support\Facades\Route::class,
+ 
+         /*
+          * Package Service Providers...
+@@ -176,8 +175,6 @@
+         App\Providers\EventServiceProvider::class,
+         App\Providers\RouteServiceProvider::class,
+         Spatie\Permission\PermissionServiceProvider::class,
+-
+-
+     ),
+ 
+     /*
+@@ -229,7 +226,6 @@
+         'URL' => Illuminate\Support\Facades\URL::class,
+         'Validator' => Illuminate\Support\Facades\Validator::class,
+         'View' => Illuminate\Support\Facades\View::class,
+-        'Input' => Illuminate\Support\Facades\Request::class,
+     ],
+ 
+ ];
+Index: app/Http/Requests/LoginRequest.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?php\r\n\r\nnamespace App\\Http\\Requests;\r\n\r\nuse Illuminate\\Foundation\\Http\\FormRequest;\r\n\r\nclass LoginRequest extends FormRequest\r\n{\r\n    /**\r\n     * Determine if the user is authorized to make this request.\r\n     *\r\n     * @return bool\r\n     */\r\n    public function authorize()\r\n    {\r\n        return true;\r\n    }\r\n\r\n    /**\r\n     * Get the validation rules that apply to the request.\r\n     *\r\n     * @return array\r\n     */\r\n    public function rules()\r\n    {\r\n        return [\r\n            'email'    => 'required|email',\r\n            'password' => 'bail|required|alpha_num|min:3   '\r\n        ];\r\n    }\r\n\r\n    /**\r\n     * Get the error messages for the defined validation rules.\r\n     *\r\n     * @return array\r\n     */\r\n    public function messages()\r\n    {\r\n        return [\r\n            'email.required' => 'Vui lòng nhập Email',\r\n            'email.email' =>'Vui lòng nhập ở định dạng Email',\r\n            'password.required' => 'Vui lòng nhập mật khẩu.',\r\n            'password.min' => 'Mật khẩu phải nhiều hơn 3 kí tự.'\r\n        ];\r\n    }\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/Http/Requests/LoginRequest.php	(revision 30a6804fde8e733a7fe8de5c74b53baf309367a9)
++++ app/Http/Requests/LoginRequest.php	(date 1602752388803)
+@@ -37,10 +37,10 @@
+     public function messages()
+     {
+         return [
+-            'email.required' => 'Vui lòng nhập Email',
+-            'email.email' =>'Vui lòng nhập ở định dạng Email',
+-            'password.required' => 'Vui lòng nhập mật khẩu.',
+-            'password.min' => 'Mật khẩu phải nhiều hơn 3 kí tự.'
++            'email.required' => 'Please enter your email',
++            'email.email' =>'Please enter your email.',
++            'password.required' => 'Please enter your password.',
++            'password.min' => 'Password least 3 char.'
+         ];
+     }
+ 
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"BranchesTreeState\">\r\n    <expand>\r\n      <path>\r\n        <item name=\"ROOT\" type=\"e8cecc67:BranchNodeDescriptor\" />\r\n        <item name=\"LOCAL_ROOT\" type=\"e8cecc67:BranchNodeDescriptor\" />\r\n      </path>\r\n      <path>\r\n        <item name=\"ROOT\" type=\"e8cecc67:BranchNodeDescriptor\" />\r\n        <item name=\"LOCAL_ROOT\" type=\"e8cecc67:BranchNodeDescriptor\" />\r\n        <item name=\"GROUP_NODE:feature\" type=\"e8cecc67:BranchNodeDescriptor\" />\r\n      </path>\r\n    </expand>\r\n    <select />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"2e0c61c6-4f3c-4d77-9454-35f092c1079e\" name=\"Default Changelist\" comment=\"\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/app/Http/Controllers/PostController.php\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/app/Http/Controllers/PostController.php\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/resources/views/post/edit.blade.php\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/resources/views/post/edit.blade.php\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/resources/views/post/list.blade.php\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/resources/views/post/list.blade.php\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/routes/web.php\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/routes/web.php\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"ComposerSettings\" doNotAsk=\"true\" synchronizationState=\"SYNCHRONIZE\">\r\n    <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>\r\n    <execution>\r\n      <executable path=\"composer\" />\r\n    </execution>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"PhpDebugGeneral\" listening_started=\"true\" />\r\n  <component name=\"PhpWorkspaceProjectConfiguration\">\r\n    <include_path>\r\n      <path value=\"$PROJECT_DIR$/vendor/egulias/email-validator\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/opis/closure\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/dnoegel/php-xdg-base-dir\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/ramsey/uuid\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/ramsey/collection\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/brick/math\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/psr/log\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/psr/event-dispatcher\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/swiftmailer/swiftmailer\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/psr/container\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/league/flysystem\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/psr/http-message\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/league/commonmark\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/psr/simple-cache\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/league/mime-type-detection\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/asm89/stack-cors\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/vlucas/phpdotenv\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/filp/whoops\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/monolog/monolog\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/composer\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/symfony/polyfill-intl-normalizer\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/symfony/var-dumper\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/symfony/polyfill-intl-grapheme\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/symfony/polyfill-iconv\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/symfony/translation-contracts\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/symfony/console\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/symfony/polyfill-php73\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/symfony/http-kernel\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/symfony/polyfill-php70\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/symfony/event-dispatcher-contracts\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/symfony/process\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/symfony/polyfill-php72\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/symfony/polyfill-intl-idn\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/symfony/deprecation-contracts\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/symfony/string\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/symfony/finder\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/symfony/mime\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/symfony/service-contracts\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/symfony/polyfill-ctype\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/symfony/polyfill-mbstring\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/symfony/translation\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/symfony/css-selector\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/symfony/event-dispatcher\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/symfony/routing\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/symfony/http-client-contracts\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/symfony/http-foundation\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/symfony/error-handler\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/symfony/polyfill-php80\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/scrivo/highlight.php\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/phpunit/phpunit\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/hamcrest/hamcrest-php\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/phpunit/php-code-coverage\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/phpunit/php-file-iterator\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/phpunit/php-timer\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/phpunit/php-text-template\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/phpunit/php-token-stream\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/guzzlehttp/promises\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/guzzlehttp/psr7\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/guzzlehttp/guzzle\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/sebastian/type\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/sebastian/code-unit-reverse-lookup\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/sebastian/version\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/sebastian/object-reflector\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/sebastian/comparator\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/sebastian/environment\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/sebastian/object-enumerator\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/sebastian/exporter\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/sebastian/diff\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/sebastian/global-state\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/fzaninotto/faker\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/sebastian/recursion-context\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/sebastian/resource-operations\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/phar-io/manifest\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/phar-io/version\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/ralouphie/getallheaders\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/webmozart/assert\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/nesbot/carbon\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/phpoption/phpoption\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/paragonie/random_compat\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/tijsverkoyen/css-to-inline-styles\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/laravel/tinker\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/laravel/framework\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/dragonmantank/cron-expression\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/myclabs/deep-copy\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/fruitcake/laravel-cors\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/fideloper/proxy\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/doctrine/lexer\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/doctrine/instantiator\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/doctrine/inflector\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/phpdocumentor/type-resolver\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/phpdocumentor/reflection-docblock\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/phpdocumentor/reflection-common\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/mockery/mockery\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/psy/psysh\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/facade/flare-client-php\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/facade/ignition-contracts\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/facade/ignition\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/nunomaduro/collision\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/theseer/tokenizer\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/voku/portable-ascii\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/phpspec/prophecy\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/nikic/php-parser\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/laravelcollective/html\" />\r\n      <path value=\"$PROJECT_DIR$/vendor/spatie/laravel-permission\" />\r\n    </include_path>\r\n  </component>\r\n  <component name=\"ProjectId\" id=\"1iUCGwc4A1mrzjefI9V4BHUE9Ay\" />\r\n  <component name=\"ProjectLevelVcsManager\">\r\n    <ConfirmationsSetting value=\"2\" id=\"Add\" />\r\n  </component>\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">\r\n    <property name=\"ASKED_ADD_EXTERNAL_FILES\" value=\"true\" />\r\n    <property name=\"RunOnceActivity.OpenProjectViewOnStart\" value=\"true\" />\r\n    <property name=\"WebServerToolWindowFactoryState\" value=\"false\" />\r\n    <property name=\"last_opened_file_path\" value=\"$PROJECT_DIR$/resources/views/post\" />\r\n    <property name=\"node.js.detected.package.eslint\" value=\"true\" />\r\n    <property name=\"node.js.detected.package.tslint\" value=\"true\" />\r\n    <property name=\"node.js.path.for.package.eslint\" value=\"project\" />\r\n    <property name=\"node.js.path.for.package.tslint\" value=\"project\" />\r\n    <property name=\"node.js.selected.package.eslint\" value=\"(autodetect)\" />\r\n    <property name=\"node.js.selected.package.tslint\" value=\"(autodetect)\" />\r\n    <property name=\"nodejs_package_manager_path\" value=\"npm\" />\r\n    <property name=\"vue.rearranger.settings.migration\" value=\"true\" />\r\n  </component>\r\n  <component name=\"RecentsManager\">\r\n    <key name=\"CopyFile.RECENT_KEYS\">\r\n      <recent name=\"C:\\laragon\\www\\Elite\\resources\\views\\post\" />\r\n      <recent name=\"C:\\laragon\\www\\Elite\\app\\Model\" />\r\n      <recent name=\"C:\\laragon\\www\\Elite\\resources\\views\" />\r\n      <recent name=\"C:\\laragon\\www\\Elite\\app\" />\r\n      <recent name=\"C:\\laragon\\www\\Elite\\public\\js\" />\r\n    </key>\r\n    <key name=\"MoveFile.RECENT_KEYS\">\r\n      <recent name=\"C:\\laragon\\www\\Elite\\app\" />\r\n      <recent name=\"C:\\laragon\\www\\Elite\\app\\Model\" />\r\n      <recent name=\"C:\\laragon\\www\\Elite\\resources\\views\\post\" />\r\n      <recent name=\"C:\\laragon\\www\\Elite\\app\\Trait\" />\r\n      <recent name=\"C:\\laragon\\www\\Elite\\public\\css\" />\r\n    </key>\r\n  </component>\r\n  <component name=\"RunManager\">\r\n    <configuration name=\"phpunit.xml\" type=\"PHPUnitRunConfigurationType\" factoryName=\"PHPUnit\">\r\n      <TestRunner scope=\"XML\" />\r\n      <method v=\"2\" />\r\n    </configuration>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"2e0c61c6-4f3c-4d77-9454-35f092c1079e\" name=\"Default Changelist\" comment=\"\" />\r\n      <created>1601952691712</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1601952691712</updated>\r\n      <workItem from=\"1601952692763\" duration=\"17146000\" />\r\n      <workItem from=\"1601975668432\" duration=\"28473000\" />\r\n      <workItem from=\"1602120120268\" duration=\"6196000\" />\r\n      <workItem from=\"1602128142496\" duration=\"5555000\" />\r\n      <workItem from=\"1602135667506\" duration=\"11408000\" />\r\n      <workItem from=\"1602209052154\" duration=\"5455000\" />\r\n      <workItem from=\"1602551337183\" duration=\"14229000\" />\r\n    </task>\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n    <option name=\"oldMeFiltersMigrated\" value=\"true\" />\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <option name=\"ADD_EXTERNAL_FILES_SILENTLY\" value=\"true\" />\r\n  </component>\r\n  <component name=\"WindowStateProjectService\">\r\n    <state x=\"426\" y=\"113\" key=\"#Inspections\" timestamp=\"1601971243358\">\r\n      <screen x=\"0\" y=\"0\" width=\"1600\" height=\"870\" />\r\n    </state>\r\n    <state x=\"426\" y=\"113\" key=\"#Inspections/0.0.1600.870@0.0.1600.870\" timestamp=\"1601971243358\" />\r\n    <state x=\"392\" y=\"93\" width=\"816\" height=\"729\" key=\"#Intentions\" timestamp=\"1601955188969\">\r\n      <screen x=\"0\" y=\"0\" width=\"1600\" height=\"870\" />\r\n    </state>\r\n    <state x=\"392\" y=\"93\" width=\"816\" height=\"729\" key=\"#Intentions/0.0.1600.870@0.0.1600.870\" timestamp=\"1601955188969\" />\r\n    <state x=\"530\" y=\"190\" key=\"#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog\" timestamp=\"1602146021219\">\r\n      <screen x=\"0\" y=\"0\" width=\"1600\" height=\"870\" />\r\n    </state>\r\n    <state x=\"530\" y=\"190\" key=\"#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.0.1600.870@0.0.1600.870\" timestamp=\"1602146021219\" />\r\n    <state x=\"576\" y=\"347\" key=\"ComposerInitDialogKey\" timestamp=\"1602063774106\">\r\n      <screen x=\"0\" y=\"0\" width=\"1600\" height=\"870\" />\r\n    </state>\r\n    <state x=\"576\" y=\"347\" key=\"ComposerInitDialogKey/0.0.1600.870@0.0.1600.870\" timestamp=\"1602063774106\" />\r\n    <state x=\"580\" y=\"190\" key=\"FileChooserDialogImpl\" timestamp=\"1602557822873\">\r\n      <screen x=\"0\" y=\"0\" width=\"1600\" height=\"870\" />\r\n    </state>\r\n    <state x=\"580\" y=\"190\" key=\"FileChooserDialogImpl/0.0.1600.870@0.0.1600.870\" timestamp=\"1602557822873\" />\r\n    <state x=\"624\" y=\"158\" key=\"NewPhpClassDialog\" timestamp=\"1602132304268\">\r\n      <screen x=\"0\" y=\"0\" width=\"1600\" height=\"870\" />\r\n    </state>\r\n    <state x=\"624\" y=\"158\" key=\"NewPhpClassDialog/0.0.1600.870@0.0.1600.870\" timestamp=\"1602132304268\" />\r\n    <state x=\"634\" y=\"358\" key=\"NewPhpFileDialog\" timestamp=\"1601952902575\">\r\n      <screen x=\"0\" y=\"0\" width=\"1600\" height=\"870\" />\r\n    </state>\r\n    <state x=\"634\" y=\"358\" key=\"NewPhpFileDialog/0.0.1600.870@0.0.1600.870\" timestamp=\"1601952902575\" />\r\n    <state x=\"507\" y=\"168\" width=\"585\" height=\"534\" key=\"find.popup\" timestamp=\"1602146679228\">\r\n      <screen x=\"0\" y=\"0\" width=\"1600\" height=\"870\" />\r\n    </state>\r\n    <state x=\"507\" y=\"168\" width=\"585\" height=\"534\" key=\"find.popup/0.0.1600.870@0.0.1600.870\" timestamp=\"1602146679228\" />\r\n    <state x=\"456\" y=\"198\" key=\"run.anything.popup\" timestamp=\"1602558076499\">\r\n      <screen x=\"0\" y=\"0\" width=\"1600\" height=\"870\" />\r\n    </state>\r\n    <state x=\"456\" y=\"198\" key=\"run.anything.popup/0.0.1600.870@0.0.1600.870\" timestamp=\"1602558076499\" />\r\n    <state x=\"463\" y=\"182\" width=\"672\" height=\"678\" key=\"search.everywhere.popup\" timestamp=\"1602558561800\">\r\n      <screen x=\"0\" y=\"0\" width=\"1600\" height=\"870\" />\r\n    </state>\r\n    <state x=\"463\" y=\"182\" width=\"672\" height=\"678\" key=\"search.everywhere.popup/0.0.1600.870@0.0.1600.870\" timestamp=\"1602558561800\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/workspace.xml	(revision 30a6804fde8e733a7fe8de5c74b53baf309367a9)
++++ .idea/workspace.xml	(date 1602815176208)
+@@ -16,9 +16,18 @@
+   </component>
+   <component name="ChangeListManager">
+     <list default="true" id="2e0c61c6-4f3c-4d77-9454-35f092c1079e" name="Default Changelist" comment="">
++      <change afterPath="$PROJECT_DIR$/resources/views/post/search-results.blade.php" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/PostController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/PostController.php" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/resources/views/post/edit.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/post/edit.blade.php" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/app/Http/Requests/CreatePostRequest.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Requests/CreatePostRequest.php" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/app/Http/Requests/CreateUserRequest.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Requests/CreateUserRequest.php" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/app/Http/Requests/LoginRequest.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Requests/LoginRequest.php" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/app/Http/Requests/UpdatePostRequest.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Requests/UpdatePostRequest.php" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/app/Http/Requests/UpdateUserRequest.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Requests/UpdateUserRequest.php" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/app/Model/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Model/User.php" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/app/Model/Uuid.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Model/Uuid.php" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/config/app.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/app.php" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/config/auth.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/auth.php" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/resources/views/post/list.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/post/list.blade.php" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
+     </list>
+@@ -34,6 +43,11 @@
+     </execution>
+   </component>
+   <component name="Git.Settings">
++    <option name="RECENT_BRANCH_BY_REPOSITORY">
++      <map>
++        <entry key="$PROJECT_DIR$" value="develop" />
++      </map>
++    </option>
+     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+   </component>
+   <component name="PhpDebugGeneral" listening_started="true" />
+@@ -157,7 +171,7 @@
+     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+     <property name="WebServerToolWindowFactoryState" value="false" />
+-    <property name="last_opened_file_path" value="$PROJECT_DIR$/resources/views/post" />
++    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+     <property name="node.js.detected.package.eslint" value="true" />
+     <property name="node.js.detected.package.tslint" value="true" />
+     <property name="node.js.path.for.package.eslint" value="project" />
+@@ -168,6 +182,13 @@
+     <property name="vue.rearranger.settings.migration" value="true" />
+   </component>
+   <component name="RecentsManager">
++    <key name="MoveFile.RECENT_KEYS">
++      <recent name="C:\laragon\www\Elite\app\Model" />
++      <recent name="C:\laragon\www\Elite\app" />
++      <recent name="C:\laragon\www\Elite\app\Http\Trait" />
++      <recent name="C:\laragon\www\Elite\resources\views\post" />
++      <recent name="C:\laragon\www\Elite\app\Trait" />
++    </key>
+     <key name="CopyFile.RECENT_KEYS">
+       <recent name="C:\laragon\www\Elite\resources\views\post" />
+       <recent name="C:\laragon\www\Elite\app\Model" />
+@@ -175,13 +196,6 @@
+       <recent name="C:\laragon\www\Elite\app" />
+       <recent name="C:\laragon\www\Elite\public\js" />
+     </key>
+-    <key name="MoveFile.RECENT_KEYS">
+-      <recent name="C:\laragon\www\Elite\app" />
+-      <recent name="C:\laragon\www\Elite\app\Model" />
+-      <recent name="C:\laragon\www\Elite\resources\views\post" />
+-      <recent name="C:\laragon\www\Elite\app\Trait" />
+-      <recent name="C:\laragon\www\Elite\public\css" />
+-    </key>
+   </component>
+   <component name="RunManager">
+     <configuration name="phpunit.xml" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
+@@ -204,6 +218,8 @@
+       <workItem from="1602135667506" duration="11408000" />
+       <workItem from="1602209052154" duration="5455000" />
+       <workItem from="1602551337183" duration="14229000" />
++      <workItem from="1602733838543" duration="10509000" />
++      <workItem from="1602813225208" duration="1543000" />
+     </task>
+     <servers />
+   </component>
+@@ -242,10 +258,10 @@
+       <screen x="0" y="0" width="1600" height="870" />
+     </state>
+     <state x="576" y="347" key="ComposerInitDialogKey/0.0.1600.870@0.0.1600.870" timestamp="1602063774106" />
+-    <state x="580" y="190" key="FileChooserDialogImpl" timestamp="1602557822873">
++    <state x="580" y="190" key="FileChooserDialogImpl" timestamp="1602737780087">
+       <screen x="0" y="0" width="1600" height="870" />
+     </state>
+-    <state x="580" y="190" key="FileChooserDialogImpl/0.0.1600.870@0.0.1600.870" timestamp="1602557822873" />
++    <state x="580" y="190" key="FileChooserDialogImpl/0.0.1600.870@0.0.1600.870" timestamp="1602737780087" />
+     <state x="624" y="158" key="NewPhpClassDialog" timestamp="1602132304268">
+       <screen x="0" y="0" width="1600" height="870" />
+     </state>
+@@ -254,10 +270,18 @@
+       <screen x="0" y="0" width="1600" height="870" />
+     </state>
+     <state x="634" y="358" key="NewPhpFileDialog/0.0.1600.870@0.0.1600.870" timestamp="1601952902575" />
++    <state x="92" y="92" width="1416" height="686" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1602756376153">
++      <screen x="0" y="0" width="1600" height="870" />
++    </state>
++    <state x="92" y="92" width="1416" height="686" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.0.1600.870@0.0.1600.870" timestamp="1602756376153" />
+     <state x="507" y="168" width="585" height="534" key="find.popup" timestamp="1602146679228">
+       <screen x="0" y="0" width="1600" height="870" />
+     </state>
+     <state x="507" y="168" width="585" height="534" key="find.popup/0.0.1600.870@0.0.1600.870" timestamp="1602146679228" />
++    <state x="580" y="148" key="git4idea.branch.GitSmartOperationDialog" timestamp="1602736328355">
++      <screen x="0" y="0" width="1600" height="870" />
++    </state>
++    <state x="580" y="148" key="git4idea.branch.GitSmartOperationDialog/0.0.1600.870@0.0.1600.870" timestamp="1602736328355" />
+     <state x="456" y="198" key="run.anything.popup" timestamp="1602558076499">
+       <screen x="0" y="0" width="1600" height="870" />
+     </state>

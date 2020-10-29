@@ -69,15 +69,17 @@
                     @auth
                         <a href="{{ url('/') }}">Home</a>
                         <a href="{{ route('viewProfile',\Illuminate\Support\Facades\Auth::id()) }}">Profile</a>
-                    @else
+                        <a href="{{ route('viewListPost') }}">Post</a>
+                        @else
                         <a href="{{ url('/') }}">Home</a>
                         <a href="{{ route('login') }}">Login</a>
 
                         @if (Route::has('register'))
                             <a href="{{ route('register') }}">Register</a>
                         @endif
+
+
                     @endauth
-                        <a href="{{ route('viewListPost') }}">Post</a>
                 </div>
             @endif
         </div>

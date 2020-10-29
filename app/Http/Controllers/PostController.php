@@ -32,6 +32,9 @@ class PostController extends Controller
         return view('post.create', ['data' => $this->getListNameCategory()]);
     }
 
+    /**
+     * @return Category[]|\Illuminate\Database\Eloquent\Collection
+     */
     public function getListNameCategory()
     {
         return Category::all();
@@ -79,6 +82,7 @@ class PostController extends Controller
                 'title' => $request->get('title'),
                 'description' => $request->get('description'),
                 'link' => $request->get('link'),
+                'image_path' => $filePath,
                 'created_at' => now(),
             ]);
             session()->flash('message', 'Your post has been posted');
@@ -113,10 +117,10 @@ class PostController extends Controller
                     'image_path' => $filePath
                 ]);
             session()->flash('message', 'Your post is updated');
-
             return redirect()->route('viewListPost');
         }
     }
+
 
     /**
      * @param $idCategory
@@ -124,8 +128,8 @@ class PostController extends Controller
      */
     public function getListPostByCategoryId($idCategory)
     {
-        $data['listPost'] = Post::query()->where('category_id', $idCategory)->paginate(5);
-        $data['nameCategory'] = Category::where('id', $idCategory)->get('name');
+        $data['listPost'] = Category::find($idCategory)->posts()->paginate(4);
+        $data['nameCategory'] = Category::find($idCategory);
         return view('post.category', ['data' => $data]);
     }
 
@@ -135,8 +139,7 @@ class PostController extends Controller
      */
     public function deletePost($id)
     {
-        Post::where('id', $id)
-            ->delete();
+        Post::find($id)->delete();
         return redirect()->route('viewListPost');
     }
 

@@ -44,5 +44,35 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'created_at' => 'datetime:Y-m-d',
     ];
+    protected $dates = [
+        'created_at',
+        'update_at',
+        'delete_at',
+    ];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function posts()
+    {
+        return $this->hasMany('App\Model\Post');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function roles()
+    {
+        return $this->belongsToMany('App\Model\Role')->withTimestamps()->withPivot('created_by');;
+    }
+
+    /**
+     * @param $name
+     */
+    public function setNameAttribute($name)
+    {
+        $this->attributes['name'] = str_replace('\' ', '\'', ucwords(str_replace('\'', '\' ', strtolower($name))));;
+    }
 }

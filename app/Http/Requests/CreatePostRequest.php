@@ -27,6 +27,7 @@ class CreatePostRequest extends FormRequest
             'title'     => 'bail|required',
             'description'    => 'bail|required',
             'link' => 'bail|required',
+            'image' => 'mimes:jpeg,png,jpg|max:1014'
         ];
     }
     /**

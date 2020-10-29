@@ -42,7 +42,7 @@
                             @endif
                             @csrf
                                 <input type="text" name="name" placeholder="Name" value="{{$user->name}}">
-                                <input type="text" name="email" placeholder="Email" value="{{$user->email}}">
+                                <input type="text" name="email" placeholder="Email" value="{{$user->email}}"readonly="readonly">
                                 <input type="password" name="password" placeholder="Password" >
                                 <input type="password" name="oldPassword" placeholder="Old Password">
                             <button class="btn btn-warning btn-login">Edit</button>

@@ -26,7 +26,11 @@ class HomeController extends Controller
     {
         if (Auth::attempt($request->only('email','password'))) {
             $data['user'] = User::where('email', $request->get('email'))->first();
-            session(['user'=>'1']);
+            $roles = User::find($data['user']->id)->roles;
+            foreach($roles as $role){
+                $listRole[] = $role->name;
+            }
+            session(['roles' => $listRole]);
             return redirect()->route('viewProfile', ['id'=>$data['user']->id]);
         } else {
             session()->flash('message', 'Something wrong!');
@@ -50,7 +54,7 @@ class HomeController extends Controller
     public function doLogout(Request $request)
     {
         Auth::logout();
-        $request->session()->forget('user');
+        $request->session()->forget('roles');
         return Redirect::to('/');
     }
 

@@ -27,6 +27,7 @@ class UpdatePostRequest extends FormRequest
             'title'     => 'bail|required',
             'description'    => 'bail|required',
             'link' => 'bail|required',
+            'image' => 'required|mimes:jpeg,png|max:1014'
         ];
     }
     /**

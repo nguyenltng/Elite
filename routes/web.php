@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -42,3 +43,13 @@ Route::group(['middleware' => 'web'], function(){
 });
 
 Route::get('/category/{id}','PostController@getListPostByCategoryId')->name('view.listPostByCategoryId');
+Route::get('/role','UserController@addRole');
+
+Route::get('/mutators', function() {
+    $user = App\Model\User::find(\Illuminate\Support\Facades\Auth::id());
+    $user->setNameAttribute('NguyASena nANaskdka sd aks');
+
+    return $user->name;
+});
+
+Route::delete('/delete-role/{id}',[UserController::class, 'deleteRole']);

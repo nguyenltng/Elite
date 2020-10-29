@@ -12,7 +12,7 @@
 
         <!-- Styles -->
         <style>
-            html, body {
+            body {
                 background-color: #fff;
                 color: #636b6f;
                 font-family: 'Nunito', sans-serif;
@@ -64,27 +64,34 @@
             }
         </style>
     </head>
-    <body>
+    <body >
     @include('header')
     @section('title','Post')
     <h1>Post</h1>
-    <table style="width:100%">
+    @if(!is_null(session()->get('roles')))
+        @if(in_array('writer', session()->get('roles')))
+            <button><a href="{{ route('view.createPost') }}">New Post</a></button>
+        @endif
+    @endif
+    <table style="margin-left: 100px; margin-right: 100px; padding: 30px;  ">
         <tr>
             <th></th>
             <th></th>
         </tr>
         @for($item = 0; $item < sizeof($data); $item++)
-            <tr style="margin-top: 100px">
+            <tr style="margin-top:100px">
                 <th></th>
-                <th><img src="{{asset($data[$item]->image_path)}}"  height="200" width="200"></th>
+                <th><img src="{{asset($data[$item]->image_path)}}"  height="200" width="250"></th>
                 <th>
                     <p style="font-size: 20px">{{$data[$item]->title}}</p>
-                    <p>{{$data[$item]->description}}<a href="{{$data[$item]->link}}">Click here</a></p>
+                    <p>{{$data[$item]->description}}<a href="{{$data[$item]->link}}" target="_blank">Click here</a></p>
                 </th>
                 <th>
-                    @if(Session::has('user'))
-                    <a href="{{route('view.editPost',['id'=>$data[$item]->id])}}"><button>Edit</button></a>
-                    <a href="{{route('deletePost',['id'=>$data[$item]->id])}}"><button>Delete</button></a>
+                    @if(!is_null(session()->get('roles')))
+                        @if(in_array('editor', session()->get('roles')))
+                        <a href="{{route('view.editPost',['id'=>$data[$item]->id])}}"><button>Edit</button></a>
+                        <a href="{{route('deletePost',['id'=>$data[$item]->id])}}"><button>Delete</button></a>
+                        @endif
                     @endif
                 </th>
             </tr>
@@ -93,8 +100,5 @@
     <div>
         {{ $data->links() }}
     </div>
-    @if(Session::has('user'))
-        <a href="{{ route('view.createPost') }}">New Post</a>
-    @endif
     </body>
 </html>

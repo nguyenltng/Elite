@@ -81,7 +81,7 @@
         <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
     @endif
         <div class="post">
-            <form action="{{route('createPost')}}" method="post">
+            <form action="{{route('createPost')}}" method="post" enctype="multipart/form-data">
                 @csrf
                 <select name="categories" id="categories">
                     @foreach($data as $item)
