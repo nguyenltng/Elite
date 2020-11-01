@@ -34,7 +34,7 @@
             margin-left: 50px;
         }
 
-        .add-role input, textarea {
+        .add-role input, textarea,button {
             display: flex;
             width: 60%;
             margin-left: 50px;
@@ -45,16 +45,7 @@
             padding-left: 25px;
         }
 
-        .add-role button {
-            display: flex;
-            width: 60%;
-            margin-left: 50px;
-            height: 30px;
-            margin-bottom: 20px;
-            border: 1px solid gray;
-            border-radius: 5px;
-            padding-left: 25px;
-        }
+
 
 
     </style>
@@ -63,6 +54,18 @@
 @include('header')
 <div class="admin">
     Admin - Role
+</div>
+<div class="add-role">
+    <form action="{{route('addRole')}}" method="post" enctype="multipart/form-data">
+        @csrf
+        <input type="text" name="role" placeholder="Name Role">
+        <button>Add</button>
+        @if ($errors->any())
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        @endif
+    </form>
 </div>
 <div class="add-role">
     <table style="margin-left: 100px; margin-right: 100px; padding: 30px;  ">

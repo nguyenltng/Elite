@@ -16,7 +16,7 @@ class RoleController extends Controller
      * @param $idRole
      * @return mixed
      */
-    public function deleteRole(DeleteUserRequest $request,$idRole)
+    public function deleteRole(DeleteUserRequest $request, $idRole)
     {
         $role = Role::findOrFail($idRole);
         $role->users()->delete();
@@ -36,7 +36,7 @@ class RoleController extends Controller
         $createdBy = User::find(Auth::id())->name;
         $user = User::find($idUser);
         $user->roles()
-            ->attach(Role::where('id', $idRole)->first(), ['created_by' =>$createdBy]);
+            ->attach(Role::where('id', $idRole)->first(), ['created_by' => $createdBy]);
         return redirect()->route('admin');
     }
 
@@ -46,9 +46,10 @@ class RoleController extends Controller
      */
     public function addRole(RoleRequest $request)
     {
-        Role::create(['name'=> $request->get('role')]);
+        dd($request->all());
+        Role::create(['name' => $request->get('role')]);
         session()->flash('message', 'Role is created');
-        return redirect()->route('admin');
+        return redirect()->route('admin.role');
     }
 
     public function getListRole()
