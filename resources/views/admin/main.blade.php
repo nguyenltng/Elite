@@ -76,7 +76,7 @@
        <div class="links">
            <a href="{{route('admin.user')}}">User</a>
            <a href="{{route('admin.role')}}">Role</a>
-           <a href="">Post</a>
+           <a href="{{ route('viewListPost') }}">Post</a>
 
        </div>
     </body>

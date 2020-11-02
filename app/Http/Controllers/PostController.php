@@ -6,6 +6,7 @@ use App\Http\Requests\CreatePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Model\Category;
 use App\Model\Post;
+use App\Model\Tag;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
@@ -21,7 +22,7 @@ class PostController extends Controller
     public function showListPost()
     {
         $data = $this->getListPost();
-        return view('post.list', ['data' => $data]);
+        return view('admin.list', ['data' => $data]);
     }
 
     /**
@@ -47,7 +48,22 @@ class PostController extends Controller
     public function showViewEditPost($id)
     {
         $data = Post::find($id);
-        return view('post.edit', ['data' => $data]);
+        $arrayTag= $data->tags()->get();
+        $data['tag'] = $this->concatenateStringFromArray($arrayTag);
+        return view('admin.editPost', ['data' => $data]);
+    }
+
+    /**
+     * @param $array
+     * @return string
+     */
+    public function concatenateStringFromArray($array): string
+    {
+        foreach ($array as $item){
+            $name[] = $item->name;
+        }
+        $string = implode(', ', $name );
+        return $string;
     }
 
     /**
@@ -70,13 +86,18 @@ class PostController extends Controller
             session()->flash('message', 'Please login first !!');
             return Redirect::to('post/create');
         } else {
+            // Check tag if dont exists => Create. else get id from name
+            $tag = explode(', ', $request->get('tag'));
+            $tagID = $this->getListNameCategory($tag);
+
+
             $image = $request->file('image');
             $name = Str::slug($request->input('name')) . '_' . time();
             $folder = '/images/';
             $filePath = $folder . $name . '.' . $image->getClientOriginalExtension();
             $this->uploadOne($image, $folder, 'public', $name);
 
-            Post::create([
+            $post = Post::create([
                 'user_id' => $user_id,
                 'category_id' => $request->get('categories'),
                 'title' => $request->get('title'),
@@ -85,10 +106,30 @@ class PostController extends Controller
                 'image_path' => $filePath,
                 'created_at' => now(),
             ]);
+
+            $post->tags()->attach($tagID);
             session()->flash('message', 'Your post has been posted');
 
             return redirect()->route('viewListPost');
         }
+    }
+
+
+    /**
+     * @param $arrayTagName
+     * @return array
+     */
+    public function getListTagIdByTagName($arrayTagName){
+        $arrayTagID = [];
+        for($i = 0; $i < sizeof($arrayTagName); $i++){
+            if(!$this->checkTagIsExists($arrayTagName[$i])){
+                $itemTag = Tag::create(['name'=> $arrayTagName[$i]]);
+                array_push($arrayTagID, $itemTag->id);
+            }else{
+                array_push($arrayTagID,Tag::where('name',$arrayTagName[$i])->first()->id);
+            }
+        }
+        return $arrayTagID;
     }
 
     /**
@@ -103,19 +144,24 @@ class PostController extends Controller
             session()->flash('message', 'Please login first !!');
             return redirect()->route('view.editPost', ['id' => $id]);
         } else {
+            $tagName = explode(', ', $request->get('tag'));
+            $tagID = $this->getListTagIdByTagName($tagName);
+
             $image = $request->file('image');
             $name = Str::slug($request->input('name')) . '_' . time();
             $folder = '/images/';
             $filePath = $folder . $name . '.' . $image->getClientOriginalExtension();
             $this->uploadOne($image, $folder, 'public', $name);
 
-            Post::where('id', $id)
+            $post = Post::where('id', $id)
                 ->update([
                     'title' => $request->get('title'),
                     'description' => $request->get('description'),
                     'link' => ($request->get('link')),
                     'image_path' => $filePath
                 ]);
+            $post->tags()->detach();
+            $post->tags()->attach($tagID);
             session()->flash('message', 'Your post is updated');
             return redirect()->route('viewListPost');
         }
@@ -141,6 +187,20 @@ class PostController extends Controller
     {
         Post::find($id)->delete();
         return redirect()->route('viewListPost');
+    }
+
+    /**
+     * @param $tag
+     * Exists => return true;
+     * @return bool
+     */
+    function checkTagIsExists($tag)
+    {
+        $tagIsExists = Tag::where('name',$tag)->first();
+        if(is_null($tagIsExists)){
+            return false;
+        }
+        return true;
     }
 
 }

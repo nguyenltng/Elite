@@ -31,7 +31,7 @@ class Post extends Model
      */
     public function category()
     {
-        return $this->belongsTo('App\Model\Category','posts_category_id_foreign');
+        return $this->belongsTo(Category::class,'posts_category_id_foreign');
     }
 
     /**
@@ -39,7 +39,12 @@ class Post extends Model
      */
     public  function user()
     {
-        return $this->belongsTo('App\Model\User','posts_user_id_foreign');
+        return $this->belongsTo(User::class,'posts_user_id_foreign');
+    }
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class)->withTimestamps();
     }
 
 }

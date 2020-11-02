@@ -69,7 +69,7 @@
     @section('title','Post')
     <h1>Post</h1>
     @if(!is_null(session()->get('roles')))
-        @if(in_array('writer', session()->get('roles')))
+        @if(in_array('admin', session()->get('roles')))
             <button><a href="{{ route('view.createPost') }}">New Post</a></button>
         @endif
     @endif
@@ -88,7 +88,7 @@
                 </th>
                 <th>
                     @if(!is_null(session()->get('roles')))
-                        @if(in_array('editor', session()->get('roles')))
+                        @if(in_array('admin', session()->get('roles')))
                         <a href="{{route('view.editPost',['id'=>$data[$item]->id])}}"><button>Edit</button></a>
                         <a href="{{route('deletePost',['id'=>$data[$item]->id])}}"><button>Delete</button></a>
                         @endif
