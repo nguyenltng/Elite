@@ -153,15 +153,16 @@ class PostController extends Controller
             $filePath = $folder . $name . '.' . $image->getClientOriginalExtension();
             $this->uploadOne($image, $folder, 'public', $name);
 
-            $post = Post::where('id', $id)
+            Post::where('id', $id)
                 ->update([
                     'title' => $request->get('title'),
                     'description' => $request->get('description'),
                     'link' => ($request->get('link')),
                     'image_path' => $filePath
                 ]);
-            $post->tags()->detach();
-            $post->tags()->attach($tagID);
+
+            Post::findorFail($id)->tags()->sync($tagID);
+//            $post->tags()->attach($tagID);
             session()->flash('message', 'Your post is updated');
             return redirect()->route('viewListPost');
         }
