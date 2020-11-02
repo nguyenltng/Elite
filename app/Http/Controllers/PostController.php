@@ -59,10 +59,11 @@ class PostController extends Controller
      */
     public function concatenateStringFromArray($array): string
     {
+        $nameTag = [];
         foreach ($array as $item){
-            $name[] = $item->name;
+            $nameTag = $item->name;
         }
-        $string = implode(', ', $name );
+        $string = implode(', ', $nameTag );
         return $string;
     }
 
@@ -186,7 +187,11 @@ class PostController extends Controller
      */
     public function deletePost($id)
     {
-        Post::find($id)->delete();
+        $post = Post::findOrFail($id);
+
+        $post->delete();
+        $post->tags()->detach();
+
         return redirect()->route('viewListPost');
     }
 

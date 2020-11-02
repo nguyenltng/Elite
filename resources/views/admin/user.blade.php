@@ -78,13 +78,13 @@
        <div class="add-role">
            <form action="{{route('addRoleToUser')}}" method="post" enctype="multipart/form-data">
                @csrf
-               Choose Role
+               Choose User
                <select name="user" id="user">
                    @foreach($user as $item)
                        <option value="{{$item->id}}">{{$item->name}}</option>
                    @endforeach
                </select><br>
-               Choose user
+               Choose role
                <select name="role" id="role">
                    @foreach($role as $item)
                        <option value="{{$item->id}}">{{$item->name}}</option>

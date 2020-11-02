@@ -69,6 +69,7 @@
             }
         </style>
     </head>
+    @include('header')
     <body>
         <div class="admin">
             Admin

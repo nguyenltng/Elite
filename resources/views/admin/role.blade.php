@@ -78,7 +78,7 @@
                 <th></th>
                 <th><input class="role" type="text" name='name' value="{{$data[$item]->name}}"></input></th>
                 <th>
-                    <a href="{{route('view.editPost',['id'=>$data[$item]->id])}}">
+                    <a href="">
                         <button>Edit</button>
                     </a>
                     <a href="{{route('main.deleteRole',['id'=>$data[$item]->id])}}">

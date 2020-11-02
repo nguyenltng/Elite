@@ -38,12 +38,12 @@ Route::group(['middleware' => 'web'], function () {
 });
 
 Route::group(['middleware' => 'web'], function(){
-    Route::get('/post',[PostController::class, 'showListPost'])->name('viewListPost');
-    Route::get('/post/create',[PostController::class, 'showViewCreatePost'] )->name('view.createPost');
-    Route::post('/post/create',[PostController::class, 'createPost'] )->name('createPost');
-    Route::get('/post/edit/{id}',[PostController::class, 'showViewEditPost'] )->name('view.editPost');
-    Route::post('/post/edit/{id}',[PostController::class, 'editPost'])->name('editPost');
-    Route::get('/post/delete/{id}',[PostController::class, 'deletePost'] )->name('deletePost');
+    Route::get('/admin/post',[PostController::class, 'showListPost'])->name('viewListPost');
+    Route::get('/admin/post/create',[PostController::class, 'showViewCreatePost'] )->name('view.createPost');
+    Route::post('/admin/post/create',[PostController::class, 'createPost'] )->name('createPost');
+    Route::get('/admin/post/edit/{id}',[PostController::class, 'showViewEditPost'] )->name('view.editPost');
+    Route::post('/admin/post/edit/{id}',[PostController::class, 'editPost'])->name('editPost');
+    Route::get('/admin/post/delete/{id}',[PostController::class, 'deletePost'] )->name('deletePost');
 });
 
 Route::get('/category/{id}',[PostController::class, 'getListPostByCategoryId'])->name('view.listPostByCategoryId');
