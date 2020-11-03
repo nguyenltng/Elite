@@ -23,7 +23,14 @@ class SearchRequest extends FormRequest
      */
     public function rules()
     {
-
+        return [
+            'column'     => 'required',
+            'perPage'    => 'required|numeric',
+            'sortBy'     => 'required',
+            'typeSort'   => 'required|boolean',
+            'fromDate'     => 'required|date',
+            'toDate'   => 'required|after_or_equal:fromDate'
+        ];
     }
 
     /**
@@ -33,7 +40,8 @@ class SearchRequest extends FormRequest
      */
     public function messages()
     {
-
+        return [
+        ];
     }
 
 }

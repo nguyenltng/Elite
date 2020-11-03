@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\DeleteUserRequest;
+use App\Http\Requests\SearchRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Model\Post;
 use App\Model\Role;
@@ -73,7 +74,7 @@ class UserController extends Controller
     }
 
 
-    public function searchUser(Request $request)
+    public function searchUser(SearchRequest $request)
     {
         $column = $request->get('column');
         $searchText = $request->get('q');
@@ -81,12 +82,13 @@ class UserController extends Controller
         $typeSort = $request->get('typeSort');
         $fromDate = $request->get('fromDate');
         $toDate = $request->get('toDate');
+        $perPage = $request->get('perPage');
         $users = User::whereHas('posts',function($query) use ($fromDate, $toDate, $searchText, $column) {
             $query->where($column,'LIKE',"%{$searchText}%")
                 ->whereBetween('created_at',[$fromDate, $toDate]);
         })
             ->with(['posts' => function($query) use ($searchText, $column) {
-                $query->get();}])->paginate(2);
+                $query->get();}])->paginate($perPage);
         if($typeSort == 0){
             $users = $users->sortBy($sortBy);
         }else if($typeSort == 1){
