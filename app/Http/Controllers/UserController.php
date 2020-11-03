@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Model\Post;
 use App\Model\Role;
 use App\Model\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -69,6 +70,36 @@ class UserController extends Controller
     public function getListUser()
     {
         return User::all();
+    }
+
+
+    public function searchUser(Request $request)
+    {
+        $column = $request->get('column');
+        $searchText = $request->get('q');
+        $sortBy = $request->get('sortBy');
+        $typeSort = $request->get('typeSort');
+        $fromDate = $request->get('fromDate');
+        $toDate = $request->get('toDate');
+        $users = User::whereHas('posts',function($query) use ($fromDate, $toDate, $searchText, $column) {
+            $query->where($column,'LIKE',"%{$searchText}%")
+                ->whereBetween('created_at',[$fromDate, $toDate]);
+        })
+            ->with(['posts' => function($query) use ($searchText, $column) {
+                $query->get();}])->paginate(2);
+        if($typeSort == 0){
+            $users = $users->sortBy($sortBy);
+        }else if($typeSort == 1){
+            $users = $users->sortByDesc($sortBy);
+        }else{
+            dd('Type sort wrong! Input:  0 = ASC, 1 = DESC');
+        }
+
+
+        return response()->json([
+            'data' => $users
+        ]);
+
     }
 
 }
