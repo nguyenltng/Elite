@@ -7,6 +7,9 @@ use App\Http\Requests\UpdatePostRequest;
 use App\Model\Category;
 use App\Model\Post;
 use App\Model\Tag;
+use App\Model\User;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
@@ -208,5 +211,32 @@ class PostController extends Controller
         }
         return true;
     }
+
+    public function searchPost(Request $request)
+    {
+        $column = $request->get('column');
+        $searchText = $request->get('q');
+        $post = User::whereHas('posts',function($query) use ($searchText, $column) {
+            $query->where($column,'LIKE',"%{$searchText}%");
+            })
+            ->with(['posts' => function($query) use ($searchText, $column) {
+            $query->where($column,'LIKE',"%{$searchText}%");}])->get();
+//            ->paginate(2);
+
+
+
+        return response()->json([
+            'data' => $post->sortBy('id')
+        ]);
+
+
+        //        $post = Post::join('users', 'users.id','posts.user_id')
+//                    ->whereLike('title', $searchText)
+//                    ->whereLike('email', $searchText)
+//                    ->get('title','name','email');
+
+    }
+
+
 
 }

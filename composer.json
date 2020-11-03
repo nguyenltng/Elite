@@ -17,7 +17,8 @@
         "laravel/framework": "^7.24",
         "laravel/tinker": "^2.0",
         "laravelcollective/html": "~6.0",
-        "spatie/laravel-permission": "^3.17"
+        "spatie/laravel-permission": "^3.17",
+      "ext-http": "*"
     },
     "require-dev": {
         "facade/ignition": "^2.0",
