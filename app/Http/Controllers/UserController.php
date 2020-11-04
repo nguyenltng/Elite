@@ -80,6 +80,9 @@ class UserController extends Controller
         $postName = $request->get('postName');
         $name = $request->get('name');
         $email = $request->get('email');
+        $typeSort = $request->get('typeSort');
+        $sortBy = $request->get('sortBy');
+        $perPage = $request->get('perPage');
 
         $users = User::WhereHas('posts',function($query) use ($postName, $name, $email) {
             $query->where('title','LIKE',"%{$postName}%");
@@ -87,7 +90,16 @@ class UserController extends Controller
                 $query->get();
         }])->where(function($query) use($request, $name, $email) {
                 $query->where('name', 'LIKE',"%{$name}%")
-                    ->Where('email', 'LIKE', "%{$email}%");})->get();
+                    ->Where('email', 'LIKE', "%{$email}%");})->paginate($perPage);
+
+        if($typeSort == 1){
+            $users = $users->sortBy($sortBy);
+        }else if($typeSort == 0){
+            $users = $users->sortByDesc($sortBy);
+        }else{
+            dd('Type sort wrong! Input 0: DESC, 1: ASC');
+        }
+
         return response()->json([
                 'data' => $users
         ]);

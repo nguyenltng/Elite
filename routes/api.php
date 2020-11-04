@@ -21,4 +21,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 //Route::delete('/delete-role/{id}',[UserController::class, 'deleteRole']);
 
-Route::GET('/search', [UserController::class, 'searchUser']);
+Route::post('/search', [UserController::class, 'searchUser']);
