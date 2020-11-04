@@ -98,7 +98,7 @@ class PostController extends Controller
 
 
             $image = $request->file('image');
-            $filePath = (new ImageController)->saveImage($image, $request->getHttpHost());
+            $filePath = (new ImageController)->saveImage($image);
 
             $post = Post::create([
                 'user_id' => $user_id,
@@ -151,7 +151,7 @@ class PostController extends Controller
             $tagID = $this->getListTagIdByTagName($tagName);
 
             $image = $request->file('image');
-            $filePath = (new ImageController)->saveImage($image, $request->getHttpHost());
+            $filePath = (new ImageController)->saveImage($image);
 
             Post::where('id', $id)
                 ->update([

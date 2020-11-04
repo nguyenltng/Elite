@@ -1,13 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Model\Post;
 
-use App\Model\Image;
-use http\Client\Response;
-use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Str;
 use App\Traits\UploadTrait;
+use Illuminate\Support\Facades\File;
 
 class ImageController extends Controller
 {
@@ -19,20 +17,30 @@ class ImageController extends Controller
      * @param $root
      * @return string
      */
-    public function saveImage(UploadedFile $image, $root): string
+    public function saveImage(UploadedFile $image): string
     {
-//        $image = $request->file('image');
         $name = '_' . time();
         $folder = '/images/';
-        $filePath = $root . $folder . $name . '.' . $image->getClientOriginalExtension();
+        $filePath = $folder . $name . '.' . $image->getClientOriginalExtension();
         $this->uploadOne($image, $folder, 'public', $name);
 
         return $filePath;
     }
 
-    public function loadImage($id)
+    /**
+     * @param $idPost
+     * @return string
+     */
+    public function loadImage($idPost)
     {
-        
+        $post = Post::query()->where('id',$idPost)->get()->first();
+        $imageFile = File::get(public_path($post->image_path));
+        $ext = pathinfo(public_path($post->image_path), PATHINFO_EXTENSION);
+        dd($ext);
+        $base64String = base64_encode($imageFile);
+        $imageSrc = 'data:image/'.$ext.'jpeg;base64,' . $base64String;
+        return $imageSrc;
+
     }
 
 }

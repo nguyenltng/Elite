@@ -81,7 +81,7 @@
         @for($item = 0; $item < sizeof($data); $item++)
             <tr style="margin-top:100px">
                 <th></th>
-                <th><img src="{{asset($data[$item]->image_path)}}"  height="200" width="250"></th>
+                <th><img src="{{ (new \App\Http\Controllers\ImageController())->loadImage($data[$item]->id)}}"  height="200" width="250"></th>
                 <th>
                     <p style="font-size: 20px">{{$data[$item]->title}}</p>
                     <p>{{$data[$item]->description}}<a href="{{$data[$item]->link}}" target="_blank">Click here</a></p>

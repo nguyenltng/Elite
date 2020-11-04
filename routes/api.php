@@ -24,3 +24,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::POST('/search', [UserController::class, 'searchUser']);
 Route::POST('/save-image', [ImageController::class, 'saveImage']);
+Route::POST('/load-image/{id}', [ImageController::class, 'loadImage']);
