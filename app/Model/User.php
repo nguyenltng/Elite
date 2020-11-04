@@ -74,4 +74,7 @@ class User extends Authenticatable
     {
         $this->attributes['name'] = str_replace('\' ', '\'', ucwords(str_replace('\'', '\' ', strtolower($name))));;
     }
+
+
+
 }

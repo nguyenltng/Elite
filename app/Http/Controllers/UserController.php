@@ -10,6 +10,7 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Model\Post;
 use App\Model\Role;
 use App\Model\User;
+use App\Transformer\UserTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -74,32 +75,21 @@ class UserController extends Controller
     }
 
 
-    public function searchUser(SearchRequest $request)
+    public function searchUser(Request $request)
     {
-        $column = $request->get('column');
-        $searchText = $request->get('q');
-        $sortBy = $request->get('sortBy');
-        $typeSort = $request->get('typeSort');
-        $fromDate = $request->get('fromDate');
-        $toDate = $request->get('toDate');
-        $perPage = $request->get('perPage');
-        $users = User::whereHas('posts',function($query) use ($fromDate, $toDate, $searchText, $column) {
-            $query->where($column,'LIKE',"%{$searchText}%")
-                ->whereBetween('created_at',[$fromDate, $toDate]);
-        })
-            ->with(['posts' => function($query) use ($searchText, $column) {
-                $query->get();}])->paginate($perPage);
-        if($typeSort == 0){
-            $users = $users->sortBy($sortBy);
-        }else if($typeSort == 1){
-            $users = $users->sortByDesc($sortBy);
-        }else{
-            dd('Type sort wrong! Input:  0 = ASC, 1 = DESC');
-        }
+        $postName = $request->get('postName');
+        $name = $request->get('name');
+        $email = $request->get('email');
 
-
+        $users = User::WhereHas('posts',function($query) use ($postName, $name, $email) {
+            $query->where('title','LIKE',"%{$postName}%");
+        })->with(['posts' => function($query) use ($postName) {
+                $query->get();
+        }])->where(function($query) use($request, $name, $email) {
+                $query->where('name', 'LIKE',"%{$name}%")
+                    ->Where('email', 'LIKE', "%{$email}%");})->get();
         return response()->json([
-            'data' => $users
+                'data' => $users
         ]);
 
     }
