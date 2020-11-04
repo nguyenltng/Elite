@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ImageController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -22,3 +23,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 //Route::delete('/delete-role/{id}',[UserController::class, 'deleteRole']);
 
 Route::POST('/search', [UserController::class, 'searchUser']);
+Route::POST('/save-image', [ImageController::class, 'saveImage']);

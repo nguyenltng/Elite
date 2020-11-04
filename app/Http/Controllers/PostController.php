@@ -93,14 +93,12 @@ class PostController extends Controller
         } else {
             // Check tag if dont exists => Create. else get id from name
             $tag = explode(', ', $request->get('tag'));
-            $tagID = $this->getListNameCategory($tag);
+
+            $tagID = $this->getListTagIdByTagName($tag);
 
 
             $image = $request->file('image');
-            $name = Str::slug($request->input('name')) . '_' . time();
-            $folder = '/images/';
-            $filePath = $folder . $name . '.' . $image->getClientOriginalExtension();
-            $this->uploadOne($image, $folder, 'public', $name);
+            $filePath = (new ImageController)->saveImage($image, $request->getHttpHost());
 
             $post = Post::create([
                 'user_id' => $user_id,
@@ -153,10 +151,7 @@ class PostController extends Controller
             $tagID = $this->getListTagIdByTagName($tagName);
 
             $image = $request->file('image');
-            $name = Str::slug($request->input('name')) . '_' . time();
-            $folder = '/images/';
-            $filePath = $folder . $name . '.' . $image->getClientOriginalExtension();
-            $this->uploadOne($image, $folder, 'public', $name);
+            $filePath = (new ImageController)->saveImage($image, $request->getHttpHost());
 
             Post::where('id', $id)
                 ->update([
