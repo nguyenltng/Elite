@@ -36,7 +36,6 @@ class ImageController extends Controller
         $post = Post::query()->where('id',$idPost)->get()->first();
         $imageFile = File::get(public_path($post->image_path));
         $ext = pathinfo(public_path($post->image_path), PATHINFO_EXTENSION);
-        dd($ext);
         $base64String = base64_encode($imageFile);
         $imageSrc = 'data:image/'.$ext.'jpeg;base64,' . $base64String;
         return $imageSrc;

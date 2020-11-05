@@ -64,8 +64,8 @@ class PostController extends Controller
     public function concatenateStringFromArray($array): string
     {
         $nameTag = [];
-        foreach ($array as $item){
-            $nameTag = $item->name;
+        for($i = 0; $i < sizeof($array); $i++){
+            $nameTag[$i] = $array[$i]->name;
         }
         $string = implode(', ', $nameTag );
         return $string;

@@ -4,21 +4,31 @@ namespace App\Http\Controllers;
 
 
 use App\Http\Requests\CreateUserRequest;
-use App\Http\Requests\DeleteUserRequest;
-use App\Http\Requests\SearchRequest;
 use App\Http\Requests\UpdateUserRequest;
-use App\Model\Post;
+use App\Http\Resources\User as UserResources;
 use App\Model\Role;
 use App\Model\User;
 use App\Transformer\UserTransformer;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use League\Fractal\Manager;
 
 class UserController extends Controller
 {
+    private $fractal;
+
+    /**
+     * @var UserTransformer
+     */
+    private $userTransformer;
+
+    function __construct(Manager $fractal, UserTransformer $userTransformer)
+    {
+        $this->fractal = $fractal;
+        $this->userTransformer = $userTransformer;
+    }
 
     /**
      * @param CreateUserRequest $request
@@ -69,12 +79,19 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * @return User[]|\Illuminate\Database\Eloquent\Collection
+     */
     public function getListUser()
     {
         return User::all();
     }
 
 
+    /**
+     * @param Request $request
+     * @return UserTransformer
+     */
     public function searchUser(Request $request)
     {
         $postName = $request->get('postName');
@@ -100,8 +117,9 @@ class UserController extends Controller
             dd('Type sort wrong! Input 0: DESC, 1: ASC');
         }
 
+
         return response()->json([
-                'data' => $users
+            'data'=> $users
         ]);
 
     }

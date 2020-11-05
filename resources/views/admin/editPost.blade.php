@@ -76,6 +76,21 @@
                 padding-left: 25px;
             }
         </style>
+        <script type="text/javascript">
+            function readURL(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        $('#image-view').attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+            $("#image").change(function(){
+                readURL(this);
+            });
+        </script>
     </head>
     <body>
     @include('header')
@@ -92,6 +107,7 @@
                 Tag <input type="text" name="tag" placeholder="Tag" value="{{$data['tag']}}" >
                 Link <input type="text" name="link" placeholder="Link" value="{{$data->link}}" >
                 Image <input id="image" type="file" name="image">
+                <img src="{{(new \App\Http\Controllers\ImageController())->loadImage($data->id)}}" id="image-view" width="200px" height="200px" />
                 @if ($errors->any())
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
